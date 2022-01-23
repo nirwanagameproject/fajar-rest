@@ -47,7 +47,6 @@ $alert-extra-padding: 50px;
   justify-content: center;
   align-items: center;
   text-align: center;
-  transform: translate(-50%, -50%);
 }
 
 .alert-main {
