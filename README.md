@@ -1,6 +1,14 @@
 # fajar-rest
 
-config to nodejs module
+## install depedency
+
+npm install --global yarn
+yarn add create-react-app
+yarn add anchor-link anchor-link-browser-transport
+yarn add @waxio/waxjs
+yarn add react-popup-alert
+
+## config to nodejs module
 
 add to after
 
