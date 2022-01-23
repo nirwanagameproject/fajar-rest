@@ -99,7 +99,7 @@ function App() {
         let imgNftNow = "imageNft"+i;
         let rarityNow = "rarityNft"+i;
         let namaku = json["data"][i]["data"]["name"];
-        let imgku = 'https://ipfs.atomichub.io/ipfs/'+json["data"][i]["data"]["img"];
+        let imgku = 'https://ipfs.io/ipfs/'+json["data"][i]["data"]["img"];
         let rarityku = json["data"][i]["data"]["description"];
         kNama.push(<td key={nameNow}>{namaku}</td>);
         kImg.push(<td key={imgNftNow}><img src={imgku} style={{width: '120px',height:'120px'}}></img></td>);
@@ -141,7 +141,7 @@ function App() {
         let imgNftNow = "imageNft"+i;
         let rarityNow = "rarityNft"+i;
         let namaku = json["data"][i]["data"]["name"];
-        let imgku = 'https://ipfs.atomichub.io/ipfs/'+json["data"][i]["data"]["img"];
+        let imgku = 'https://ipfs.io/ipfs/'+json["data"][i]["data"]["img"];
         let rarityku = json["data"][i]["data"]["description"];
         kNama.push(<td key={nameNow}>{namaku}</td>);
         kImg.push(<td key={imgNftNow}><img src={imgku} style={{width: '120px',height:'120px'}}></img></td>);
@@ -182,7 +182,7 @@ function App() {
         let imgNftNow = "imageNft"+i;
         let rarityNow = "rarityNft"+i;
         let namaku = json["data"][i]["data"]["name"];
-        let imgku = 'https://ipfs.atomichub.io/ipfs/'+json["data"][i]["data"]["img"];
+        let imgku = 'https://ipfs.io/ipfs/'+json["data"][i]["data"]["img"];
         let rarityku = json["data"][i]["data"]["description"];
         kNama.push(<td key={nameNow}>{namaku}</td>);
         kImg.push(<td key={imgNftNow}><img src={imgku} style={{width: '120px',height:'120px'}}></img></td>);
@@ -216,7 +216,7 @@ function App() {
         let descPacks = (json["data"][1]["immutable_data"]["description"]);
         let namePacks = (json["data"][1]["name"]);
         let idPacks = (json["data"][1]["template_id"]);
-        let gambarPacks = 'https://ipfs.atomichub.io/ipfs/'+(json["data"][1]["immutable_data"]["img"]);
+        let gambarPacks = 'https://ipfs.io/ipfs/'+(json["data"][1]["immutable_data"]["img"]);
         imgPacksL = 
                     <table align="center" style={{marginTop: '20px'}} >
                       <thead>
