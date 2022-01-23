@@ -1,0 +1,220 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+$alert-width: 500px;
+$alert-extra-padding: 50px;
+
+.alert-container {
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.alert-main {
+  animation: fadeIn ease 0.5s;
+  width: $alert-width;
+  margin: auto;
+  position: fixed;
+  background-color: white;
+  min-height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  @media (max-width: $alert-width+$alert-extra-padding) {
+    width: 90vw;
+    left: 5vw;
+  }
+}
+
+.alert-header {
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.alert-body {
+  text-align: center;
+  font-size: 17px;
+}
+
+.alert-button {
+  width: 90px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  text-decoration: none;
+  color: white;
+  border-radius: 40px;
+  font-size: 17px;
+  font-weight: 600;
+  border-radius: 30px;
+  align-items: center;
+  position: relative;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.backdrop {
+  animation: fadeIn ease 1s;
+  background-color: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9998;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+
+#menu {
+  margin: auto;
+  margin-bottom: 20px;
+  text-align: center;
+  justify-content: center;
+  width: 500px;
+  background: #0099CC;
+  color: #FFF;
+  height: 45px;
+  padding-left: 18px;
+  border-radius: 10px;
+}
+#menu ul, #menu li {
+  margin: 0 auto;
+  padding: 0;
+  list-style: none
+}
+#menu ul {
+   display: inline-block;
+}
+#menu li {
+  float: left;
+  display: inline;
+  position: relative;
+}
+#menu a {
+  display: block;
+  line-height: 45px;
+  padding: 0 14px;
+  text-decoration: none;
+  color: #FFFFFF;
+  font-size: 16px;
+}
+#menu a.dropdown-arrow:after {
+  content: "\25BE";
+  margin-left: 5px;
+}
+#menu li a:hover {
+  color: #0099CC;
+  background: #F2F2F2;
+}
+#menu input {
+  display: none;
+  margin: 0;
+  padding: 0;
+  height: 45px;
+  width: 100%;
+  opacity: 0;
+  cursor: pointer
+}
+#menu label {
+  display: none;
+  line-height: 45px;
+  text-align: center;
+  position: absolute;
+  left: 35px
+}
+#menu label:before {
+  font-size: 1.6em;
+  content: "\2261"; 
+  margin-left: 20px;
+}
+#menu ul.sub-menus{
+  height: auto;
+  overflow: hidden;
+  width: 170px;
+  background: #444444;
+  position: absolute;
+  z-index: 99;
+  display: none;
+}
+#menu ul.sub-menus li {
+  display: block;
+  width: 100%;
+}
+#menu ul.sub-menus a {
+  color: #FFFFFF;
+  font-size: 16px;
+}
+#menu li:hover ul.sub-menus {
+  display: block
+}
+#menu ul.sub-menus a:hover{
+  background: #F2F2F2;
+  color: #444444;
+}
+@media screen and (max-width: 800px){
+  #menu {position:relative}
+  #menu ul {background:#111;position:absolute;top:100%;right:0;left:0;z-index:3;height:auto;display:none}
+  #menu ul.sub-menus {width:100%;position:static;}
+  #menu ul.sub-menus a {padding-left:30px;}
+  #menu li {display:block;float:none;width:auto;}
+  #menu input, #menu label {position:absolute;top:0;left:0;display:block}
+  #menu input {z-index:4}
+  #menu input:checked + label {color:white}
+  #menu input:checked + label:before {content:"\00d7"}
+  #menu input:checked ~ ul {display:block}
+}
+
