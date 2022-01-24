@@ -86,6 +86,55 @@ function App() {
       
   }
 
+  async function getClaimedNft(trxId){
+    
+    session = await link.restoreSession(identifier);
+
+    let banyakAksi = 0;
+    let json;
+    while(banyakAksi < 3){
+      const res = await fetch(
+        "https://testnet.waxsweden.org/v2/history/get_transaction?id="+trxId
+      );
+
+      json = await res.json();
+      banyakAksi = json["actions"].length;
+    }
+
+    let assetId = json["actions"][2]["act"]["data"]["asset_id"];
+
+    fetch(
+      "https://aa-testnet.neftyblocks.com/atomicassets/v1/assets?page=1&ids="+assetId
+    ).then((res) => res.json())
+    .then((json2) => {
+      let namaku = json2["data"][0]["data"]["name"];
+      let imgku = 'https://ipfs.io/ipfs/'+json2["data"][0]["data"]["img"];
+      let rarityku = json2["data"][0]["data"]["rarity"];
+
+      let namaClaim = <td>{namaku}</td>; 
+      let imgClaim = <td><img src={imgku} style={{width: '120px',height:'120px'}}></img></td>;
+      let rarityClaim = <td>{rarityku}</td>;
+      imgPacksL = 
+                <table align="center" style={{marginTop: '20px'}} >
+                  <thead>
+                    <tr>
+                      {namaClaim}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      {imgClaim}
+                    </tr>
+                    <tr>
+                      {rarityClaim}
+                    </tr>
+                  </tbody>
+                </table>;
+      setPacksL(imgPacksL);
+    
+    });
+  }
+
   async function getNftPack(){
 
     session = await link.restoreSession(identifier);
@@ -176,7 +225,7 @@ function App() {
     const response = await session.transact({action})
     .then(function(response){
       if(response.processed.receipt.status=="executed"){
-        onShowAlert("success","Pack successfully claimed.Transaction at "+response.processed.id,"Pack Claimed",() => {getNft();onCloseAlert()});
+        onShowAlert("success","Pack successfully claimed.Transaction at "+response.processed.id,"Pack Claimed",() => {getClaimedNft(response.processed.id);onCloseAlert()});
       }
     })
     .catch(function (e) {
