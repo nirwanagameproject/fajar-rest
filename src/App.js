@@ -354,6 +354,57 @@ function App() {
     });
   }
 
+  async function getPacksContent(namaPack,gambarPacks,descPacks,idPacks){
+    session = await link.restoreSession(identifier);
+
+    var hasil = await link.client.v1.chain.get_table_rows({
+      code: "fajarmuhf123",
+      index_position: 1,
+      json: true,
+      key_type: "",
+      limit: "100",
+      lower_bound: null,
+      reverse: false,
+      scope: "fajarmuhf123",
+      show_payer: false,
+      table: "priceitem",
+      upper_bound: null
+    });
+
+    let pricePacks;
+
+    for(var i=0;i<hasil["rows"].length;i++){
+      if(namaPack == hasil["rows"][i]["nm"]){
+        pricePacks = hasil["rows"][i]["price"];
+      }
+    }
+
+
+    imgPacksL = 
+                <table align="center" style={{marginTop: '20px'}} >
+                  <thead>
+                    <tr>
+                      <td>{namaPack}</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><img src={gambarPacks} style={{width: '120px',height:'120px'}}></img></td>
+                    </tr>
+                    <tr>
+                      <td>{descPacks}</td>
+                    </tr>
+                    <tr>
+                      <td>{pricePacks}</td>
+                    </tr>
+                    <tr>
+                      <td><button onClick={() => buyPacks(idPacks,(session.auth.actor))}>Buy Now</button></td>
+                    </tr>
+                  </tbody>
+                </table>;
+    setPacksL(imgPacksL);
+  }
+
   async function getPacks(){
     session = await link.restoreSession(identifier);
 
@@ -365,26 +416,10 @@ function App() {
         let namePacks = (json["data"][1]["name"]);
         let idPacks = (json["data"][1]["template_id"]);
         let gambarPacks = 'https://ipfs.io/ipfs/'+(json["data"][1]["immutable_data"]["img"]);
-        imgPacksL = 
-                    <table align="center" style={{marginTop: '20px'}} >
-                      <thead>
-                        <tr>
-                          <td>{namePacks}</td>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td><img src={gambarPacks} style={{width: '120px',height:'120px'}}></img></td>
-                        </tr>
-                        <tr>
-                          <td>{descPacks}</td>
-                        </tr>
-                        <tr>
-                          <td><button onClick={() => buyPacks(idPacks,(session.auth.actor))}>Buy Now</button></td>
-                        </tr>
-                      </tbody>
-                    </table>;
-        setPacksL(imgPacksL);
+
+        let pricePacks = getPacksContent(namePacks,gambarPacks,descPacks,idPacks);
+
+
         setStatusContent("BuyPacks");
     })
   }
