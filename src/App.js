@@ -76,7 +76,7 @@ function App() {
       const response = await session.transact({action})
       .then(function(response){
         if(response.processed.receipt.status=="executed"){
-          onShowAlert("success","Pack successfully purchased.Transaction at "+response.processed.id,"Pack Bought",() => {getNftPack();onCloseAlert()});
+          onShowAlert("success","Pack successfully purchased.Transaction at "+response.processed.id,"Pack Bought",() => {getNftPack();coba(userKu);onCloseAlert()});
         }
       })
       .catch(function (e) {
