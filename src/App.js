@@ -512,6 +512,10 @@ function App() {
     })
   }
 
+  async function getCooking(){
+    
+  }
+
   async function coba(userStr){
     var hasil = await link.client.v1.chain.get_table_rows({
         code: "fajarmftoken",
