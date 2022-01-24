@@ -643,6 +643,7 @@ function App() {
             </ul>
           </li>
           <li><a onClick={getPacks}>Buy Packs</a></li>
+          <li><a onClick={getCooking}>Cooking</a></li>
           <li><a onClick={logout}>Log out</a></li>
         </ul>
       </nav>
