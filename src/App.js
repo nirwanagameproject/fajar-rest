@@ -61,7 +61,7 @@ function App() {
     })
   }
 
-  async function buyPacks(tempId,userKu){
+  async function buyPacks(tempId,userKu,pricePacks){
     const action = {
         account: 'fajarmftoken',
         name: 'transfer',
@@ -69,7 +69,7 @@ function App() {
         data: {
           from: (userKu),
           to : ("fajarmuhf123"),
-          quantity: '8.0000 FAJAR',
+          quantity: pricePacks,
           memo: "buy packs "+tempId
         }
     }
@@ -398,7 +398,7 @@ function App() {
                       <td>{pricePacks}</td>
                     </tr>
                     <tr>
-                      <td><button onClick={() => buyPacks(idPacks,(session.auth.actor))}>Buy Now</button></td>
+                      <td><button onClick={() => buyPacks(idPacks,(session.auth.actor),pricePacks)}>Buy Now</button></td>
                     </tr>
                   </tbody>
                 </table>;
