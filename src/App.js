@@ -16,6 +16,7 @@ function App() {
   const [userAccount,setUserAccount] = useState('No wallet linked');
   const [balanceAccount,setBalanceAccount] = useState('');
   const [packsL,setPacksL] = useState('');
+  const [statusContent,setStatusContent] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLogout, setIsLogout] = useState(false);
   const [isPageLoaded, setIsPageLoaded] = useState(false); //this helps
@@ -45,16 +46,18 @@ function App() {
       header: '',
       type: '',
       text: '',
-      show: false
+      show: false,
+      onCloseAlert:onCloseAlert
     })
   }
 
-  function onShowAlert(type,tulis,judul) {
+  function onShowAlert(type,tulis,judul,fungsiTutup) {
     setAlert({
       header: judul,
       type: type,
       text: tulis,
-      show: true
+      show: true,
+      onCloseAlert : fungsiTutup
     })
   }
 
@@ -66,26 +69,29 @@ function App() {
         data: {
           from: (userKu),
           to : ("fajarmuhf123"),
-          quantity: '1.0000 FAJAR',
+          quantity: '8.0000 FAJAR',
           memo: "buy packs "+tempId
         }
     }
       const response = await session.transact({action})
       .then(function(response){
         if(response.processed.receipt.status=="executed"){
-          onShowAlert("success","Pack successfully purchased.Transaction at "+response.processed.id,"Packs bought");
+          onShowAlert("success","Pack successfully purchased.Transaction at "+response.processed.id,"Pack Bought",() => {getNftPack();onCloseAlert()});
         }
       })
       .catch(function (e) {
         console.log(e);
-        onShowAlert("error","Pack failed to buy."+e,"Error Purchase");
+        onShowAlert("error","Pack failed to buy."+e,"Fail Bought",() => {onCloseAlert()});
       })
       
   }
 
   async function getNftPack(){
+
+    session = await link.restoreSession(identifier);
+
     fetch(
-      "https://aa-testnet.neftyblocks.com/atomicmarket/v1/assets?page=1&limit=10&order=desc&sort=transferred&owner="+new String(userAccount)+"&collection_name=fajarmuhf123&schema_name=packs"
+      "https://aa-testnet.neftyblocks.com/atomicmarket/v1/assets?page=1&limit=10&order=desc&sort=transferred&owner="+new String(session.auth.actor)+"&collection_name=fajarmuhf123&schema_name=packs"
     ).then((res) => res.json())
     .then((json) => {
       var banyak = json["data"].length;
@@ -94,21 +100,27 @@ function App() {
       let kNama=[];
       let kImg=[];
       let kRarity=[];
+      let kButton=[];
       while(i<banyak){
+        let assetId = (json["data"][i]["asset_id"]);
         let nameNow = "nameNft"+i;
         let imgNftNow = "imageNft"+i;
         let rarityNow = "rarityNft"+i;
+        let buttonNow = "buttonNft"+i;
         let namaku = json["data"][i]["data"]["name"];
         let imgku = 'https://ipfs.io/ipfs/'+json["data"][i]["data"]["img"];
         let rarityku = json["data"][i]["data"]["description"];
+        let buttonku = <button onClick={() => unboxPacks(assetId)}>Unbox</button>;
         kNama.push(<td key={nameNow}>{namaku}</td>);
         kImg.push(<td key={imgNftNow}><img src={imgku} style={{width: '120px',height:'120px'}}></img></td>);
+        kButton.push(<td key={buttonNow}>{buttonku}</td>);
         kRarity.push(<td key={rarityNow}>{rarityku}</td>);
         i++;
       }
 
       konten.push(<tr key="imageNft">{kImg}</tr>);
       konten.push(<tr key="rarityNft">{kRarity}</tr>);
+      konten.push(<tr key="buttonNft">{kButton}</tr>);
       imgPacksL = <table align='center' style={{marginTop: '20px'}} >
                       <thead>
                         <tr key="nameNft">
@@ -120,14 +132,146 @@ function App() {
                       </tbody>
                       </table>;
       setPacksL(imgPacksL);
+      setStatusContent("Packs");
       
     });
+  }
+
+  async function unboxPacks(assetId){
+    session = await link.restoreSession(identifier);
+    const action = {
+        account: 'atomicassets',
+        name: 'transfer',
+        authorization: [session.auth],
+        data: {
+          asset_ids : [assetId],
+          from: (session.auth.actor),
+          memo: "unbox",
+          to: "atomicpacksx"
+        }
+    }
+    const response = await session.transact({action})
+    .then(function(response){
+      if(response.processed.receipt.status=="executed"){
+        onShowAlert("success","Pack successfully unbox.Transaction at "+response.processed.id,"Pack Unboxed",() => {getNftUnclaimPack();onCloseAlert()});
+      }
+    })
+    .catch(function (e) {
+      console.log(e);
+      onShowAlert("error","Pack failed to unbox."+e,"Fail Unboxed",() => onCloseAlert());
+    })
+  }
+
+  async function claimPacks(assetId){
+    session = await link.restoreSession(identifier);
+    const action = {
+        account: 'atomicpacksx',
+        name: 'claimunboxed',
+        authorization: [session.auth],
+        data: {
+          origin_roll_ids: [0],
+          pack_asset_id : assetId
+        }
+    }
+    const response = await session.transact({action})
+    .then(function(response){
+      if(response.processed.receipt.status=="executed"){
+        onShowAlert("success","Pack successfully claimed.Transaction at "+response.processed.id,"Pack Claimed",() => {getNft();onCloseAlert()});
+      }
+    })
+    .catch(function (e) {
+      console.log(e);
+      onShowAlert("error","Pack failed to claim."+e,"Fail Claimed",() => onCloseAlert());
+    })
+  }
+
+  async function getNftUnclaimPack(){
+    session = await link.restoreSession(identifier);
+
+    var json = await link.client.v1.chain.get_table_rows({
+        code: "atomicpacksx",
+        index_position: 2,
+        json: true,
+        key_type: "name",
+        limit: 10,
+        lower_bound: new String(session.auth.actor),
+        reverse: false,
+        scope: "atomicpacksx",
+        show_payer: false,
+        table: "unboxpacks",
+        upper_bound: new String(session.auth.actor)
+      });
+    var banyak = json["rows"].length;
+    var i=0;
+    let konten=[];
+    let kNama=[];
+    let kImg=[];
+    let kButton=[];
+    let kRarity=[];
+    while(i<banyak){
+      let nameNow = "nameNft"+i;
+      let imgNftNow = "imageNft"+i;
+      let rarityNow = "rarityNft"+i;
+      let buttonNow = "buttonNft"+i;
+      let assetId = json["rows"][i]["pack_asset_id"];
+
+      fetch(
+      "https://aa-testnet.neftyblocks.com/atomicassets/v1/assets?page=1&ids="+assetId
+      ).then((res) => res.json())
+      .then((json2) => {
+        let namaku = json2["data"][0]["data"]["name"];
+        let imgku = 'https://ipfs.io/ipfs/'+json2["data"][0]["data"]["img"];
+        let rarityku = json2["data"][0]["data"]["description"];
+        let buttonku = <button onClick={() => claimPacks(assetId)}>Claim</button>;
+        console.log(namaku);
+        kNama.push(<td key={nameNow}>{namaku}</td>);
+        kImg.push(<td key={imgNftNow}><img src={imgku} style={{width: '120px',height:'120px'}}></img></td>);
+        kRarity.push(<td key={rarityNow}>{rarityku}</td>);
+        kButton.push(<td key={buttonNow}>{buttonku}</td>);
+        konten=[];
+        konten.push(<tr key="imageNft">{kImg}</tr>);
+        konten.push(<tr key="rarityNft">{kRarity}</tr>);
+        konten.push(<tr key="buttonNft">{kButton}</tr>);
+        imgPacksL = <table align='center' style={{marginTop: '20px'}} >
+                        <thead>
+                          <tr key="nameNft">
+                            {kNama}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {konten}
+                        </tbody>
+                        </table>;
+        setPacksL(imgPacksL);
+        setStatusContent("UnclaimPacks");
+      });
+      i++;
+    }
+    if(banyak==0){
+      konten.push(<tr key="imageNft">{kImg}</tr>);
+      konten.push(<tr key="rarityNft">{kRarity}</tr>);
+      konten.push(<tr key="buttonNft">{kButton}</tr>);
+      imgPacksL = <table align='center' style={{marginTop: '20px'}} >
+                      <thead>
+                        <tr key="nameNft">
+                          {kNama}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {konten}
+                      </tbody>
+                      </table>;
+      setPacksL(imgPacksL);
+      setStatusContent("UnclaimPacks");
+    }
   }
 
 
   async function getNft(){
+    session = await link.restoreSession(identifier);
+
     fetch(
-      "https://aa-testnet.neftyblocks.com/atomicmarket/v1/assets?page=1&limit=10&order=desc&sort=transferred&owner="+new String(userAccount)+"&collection_name=fajarmuhf123&schema_name=food"
+      "https://aa-testnet.neftyblocks.com/atomicmarket/v1/assets?page=1&limit=10&order=desc&sort=transferred&owner="+new String(session.auth.actor)+"&collection_name=fajarmuhf123&schema_name=food"
     ).then((res) => res.json())
     .then((json) => {
       var banyak = json["data"].length;
@@ -162,13 +306,15 @@ function App() {
                       </tbody>
                       </table>;
       setPacksL(imgPacksL);
-      
+      setStatusContent("Food");
     });
   }
 
   async function getNftTool(){
+    session = await link.restoreSession(identifier);
+
     fetch(
-      "https://aa-testnet.neftyblocks.com/atomicmarket/v1/assets?page=1&limit=10&order=desc&sort=transferred&owner="+new String(userAccount)+"&collection_name=fajarmuhf123&schema_name=tools"
+      "https://aa-testnet.neftyblocks.com/atomicmarket/v1/assets?page=1&limit=10&order=desc&sort=transferred&owner="+new String(session.auth.actor)+"&collection_name=fajarmuhf123&schema_name=tools"
     ).then((res) => res.json())
     .then((json) => {
       var banyak = json["data"].length;
@@ -203,12 +349,14 @@ function App() {
                       </tbody>
                       </table>;
       setPacksL(imgPacksL);
+      setStatusContent("Tools");
       
     });
   }
 
   async function getPacks(){
     session = await link.restoreSession(identifier);
+
     fetch(
       "https://test.wax.api.atomicassets.io/atomicassets/v1/templates?collection_name=fajarmuhf123&schema_name=packs&limit=1000")
     .then((res) => res.json())
@@ -237,6 +385,7 @@ function App() {
                       </tbody>
                     </table>;
         setPacksL(imgPacksL);
+        setStatusContent("BuyPacks");
     })
   }
 
@@ -349,7 +498,7 @@ function App() {
           text={alert.text}
           type={alert.type}
           show={alert.show}
-          onClosePress={onCloseAlert}
+          onClosePress={alert.onCloseAlert}
           pressCloseOnOutsideClick={true}
           showBorderBottom={true}
           alertStyles={{}}
@@ -374,6 +523,12 @@ function App() {
           <li><a onClick={logout}>Log out</a></li>
         </ul>
       </nav>
+        : false
+      }
+      {(statusContent == "Packs")
+        ? (<button onClick={getNftUnclaimPack}>Unclaim Packs</button>)
+        : (statusContent == "UnclaimPacks")
+        ? (<button onClick={getNftPack}>My Packs</button>)
         : false
       }
       <div id='balance'>Hello {userAccount} {balanceAccount}</div>
