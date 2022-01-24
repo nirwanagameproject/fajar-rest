@@ -151,7 +151,7 @@ function App() {
       let kRarity=[];
       let kButton=[];
       while(i<banyak){
-        let assetId = (json["data"][i]["asset_id"]);
+        const assetId = (json["data"][i]["asset_id"]);
         let nameNow = "nameNft"+i;
         let imgNftNow = "imageNft"+i;
         let rarityNow = "rarityNft"+i;
@@ -271,6 +271,7 @@ function App() {
         let namaku = json2["data"][0]["data"]["name"];
         let imgku = 'https://ipfs.io/ipfs/'+json2["data"][0]["data"]["img"];
         let rarityku = json2["data"][0]["data"]["description"];
+        const assetId = assetId;
         let buttonku = <button onClick={() => claimPacks(assetId)}>Claim</button>;
         console.log(namaku);
         kNama.push(<td key={nameNow}>{namaku}</td>);
@@ -335,7 +336,7 @@ function App() {
         let rarityNow = "rarityNft"+i;
         let namaku = json["data"][i]["data"]["name"];
         let imgku = 'https://ipfs.io/ipfs/'+json["data"][i]["data"]["img"];
-        let rarityku = json["data"][i]["data"]["description"];
+        let rarityku = json["data"][i]["data"]["rarity"];
         kNama.push(<td key={nameNow}>{namaku}</td>);
         kImg.push(<td key={imgNftNow}><img src={imgku} style={{width: '120px',height:'120px'}}></img></td>);
         kRarity.push(<td key={rarityNow}>{rarityku}</td>);
@@ -378,7 +379,7 @@ function App() {
         let rarityNow = "rarityNft"+i;
         let namaku = json["data"][i]["data"]["name"];
         let imgku = 'https://ipfs.io/ipfs/'+json["data"][i]["data"]["img"];
-        let rarityku = json["data"][i]["data"]["description"];
+        let rarityku = json["data"][i]["data"]["rarity"];
         kNama.push(<td key={nameNow}>{namaku}</td>);
         kImg.push(<td key={imgNftNow}><img src={imgku} style={{width: '120px',height:'120px'}}></img></td>);
         kRarity.push(<td key={rarityNow}>{rarityku}</td>);
@@ -403,7 +404,7 @@ function App() {
     });
   }
 
-  async function getPacksContent(namaPack,gambarPacks,descPacks,idPacks){
+  async function getPacksContent(json){
     session = await link.restoreSession(identifier);
 
     var hasil = await link.client.v1.chain.get_table_rows({
@@ -420,11 +421,53 @@ function App() {
       upper_bound: null
     });
 
-    let pricePacks;
+    let nameContent=[];
+    let descContent=[];
+    let priceContent=[];
+    let gambarContent=[];
+    let buttonContent=[];
 
-    for(var i=0;i<hasil["rows"].length;i++){
-      if(namaPack == hasil["rows"][i]["nm"]){
-        pricePacks = hasil["rows"][i]["price"];
+    let idPackArr = [];
+    let pricePackArr = [];
+
+    var store = (function() {
+        var map = {};
+
+        return {
+            set: function ( name, value ) {
+                map[ name ] = value;
+            },
+            get: function ( name ) {
+                return map[ name ];
+            }
+        };
+    })();
+
+    for(var i=0;i<json["data"].length;i++){
+      var descPacks = (json["data"][i]["immutable_data"]["description"]);
+      var namePacks = (json["data"][i]["name"]);
+      var idPacks = (json["data"][i]["template_id"]);
+      var gambarPacks = 'https://ipfs.io/ipfs/'+(json["data"][i]["immutable_data"]["img"]);
+
+      for(var j=0;j<hasil["rows"].length;j++){
+        if(idPacks == hasil["rows"][j]["template_id"]){
+          let nameNow = "nameNft"+i;
+          let imgNftNow = "imageNft"+i;
+          let rarityNow = "rarityNft"+i;
+          let priceNow = "priceNft"+i;
+          let gambarNow = "gambarNft"+i;
+          let buttonNow = "buttonNft"+i;
+
+          const idPacks = hasil["rows"][j]["template_id"];
+          
+          const pricePacks = hasil["rows"][j]["price"];
+          const fungsi = () => {buyPacks(idPacks,(session.auth.actor),pricePacks)};
+          nameContent.push(<td key={nameNow}>{namePacks}</td>);
+          descContent.push(<td key={imgNftNow}>{descPacks}</td>);
+          priceContent.push(<td key={priceNow}>{pricePacks}</td>);
+          gambarContent.push(<td key={gambarNow}><img src={gambarPacks} style={{width: '120px',height:'120px'}}></img></td>);
+          buttonContent.push(<td key={buttonNow}><button onClick={fungsi}>Buy Now</button></td>);
+        }
       }
     }
 
@@ -433,21 +476,21 @@ function App() {
                 <table align="center" style={{marginTop: '20px'}} >
                   <thead>
                     <tr>
-                      <td>{namaPack}</td>
+                      {nameContent}
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td><img src={gambarPacks} style={{width: '120px',height:'120px'}}></img></td>
+                      {gambarContent}
                     </tr>
                     <tr>
-                      <td>{descPacks}</td>
+                      {descContent}
                     </tr>
                     <tr>
-                      <td>{pricePacks}</td>
+                      {priceContent}
                     </tr>
                     <tr>
-                      <td><button onClick={() => buyPacks(idPacks,(session.auth.actor),pricePacks)}>Buy Now</button></td>
+                      {buttonContent}
                     </tr>
                   </tbody>
                 </table>;
@@ -461,12 +504,8 @@ function App() {
       "https://test.wax.api.atomicassets.io/atomicassets/v1/templates?collection_name=fajarmuhf123&schema_name=packs&limit=1000")
     .then((res) => res.json())
     .then((json) => {
-        let descPacks = (json["data"][1]["immutable_data"]["description"]);
-        let namePacks = (json["data"][1]["name"]);
-        let idPacks = (json["data"][1]["template_id"]);
-        let gambarPacks = 'https://ipfs.io/ipfs/'+(json["data"][1]["immutable_data"]["img"]);
 
-        let pricePacks = getPacksContent(namePacks,gambarPacks,descPacks,idPacks);
+        let pricePacks = getPacksContent(json);
 
 
         setStatusContent("BuyPacks");
