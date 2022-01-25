@@ -212,13 +212,27 @@ function App() {
   }
 
   async function claimPacks(assetId){
+    var json = await link.client.v1.chain.get_table_rows({
+      code: "atomicpacksx",
+      index_position: 1,
+      json: true,
+      key_type: "",
+      limit: 1000,
+      lower_bound: "",
+      reverse: false,
+      scope: assetId,
+      show_payer: false,
+      table: "unboxassets",
+      upper_bound: ""
+    });
+
     session = await link.restoreSession(identifier);
     const action = {
         account: 'atomicpacksx',
         name: 'claimunboxed',
         authorization: [session.auth],
         data: {
-          origin_roll_ids: [0],
+          origin_roll_ids: [json["rows"][0]["origin_roll_id"]],
           pack_asset_id : assetId
         }
     }
