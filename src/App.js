@@ -271,8 +271,8 @@ function App() {
         let namaku = json2["data"][0]["data"]["name"];
         let imgku = 'https://ipfs.io/ipfs/'+json2["data"][0]["data"]["img"];
         let rarityku = json2["data"][0]["data"]["description"];
-        const assetId = assetId;
-        let buttonku = <button onClick={() => claimPacks(assetId)}>Claim</button>;
+        const assetIds = assetId;
+        let buttonku = <button onClick={() => claimPacks(assetIds)}>Claim</button>;
         console.log(namaku);
         kNama.push(<td key={nameNow}>{namaku}</td>);
         kImg.push(<td key={imgNftNow}><img src={imgku} style={{width: '120px',height:'120px'}}></img></td>);
@@ -513,7 +513,7 @@ function App() {
   }
 
   async function getCooking(){
-    
+
   }
 
   async function coba(userStr){
