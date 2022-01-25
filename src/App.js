@@ -562,6 +562,49 @@ function App() {
     setBalanceAccount(bal);
       
   }
+
+  async function newUser(sesi){
+    let userKu = sesi.auth.actor;
+    var hasil = await link.client.v1.chain.get_table_rows({
+        code: "fajarmuhf123",
+        index_position: 1,
+        json: true,
+        key_type: "account",
+        limit: "100",
+        lower_bound: userKu,
+        reverse: false,
+        scope: "fajarmuhf123",
+        show_payer: false,
+        table: "account",
+        upper_bound: userKu
+      });
+      console.log(hasil);
+      console.log(hasil["rows"].length);
+
+    if(hasil["rows"].length == 0){
+      const action = {
+          account: 'fajarmuhf123',
+          name: 'newuser',
+          authorization: [sesi.auth],
+          data: {
+            nama: (userKu)
+          }
+      }
+      const response = await sesi.transact({action})
+      .then(function(response){
+          console.log("halo");
+          session = sesi;
+          restoreSession();
+      }).catch(function (e) {
+          sesi.remove();
+      });
+    }
+    else{        
+      session = sesi;
+      restoreSession();
+    }
+  }
+
   async function restoreSession(){
     link.restoreSession(identifier).then((result) => {
         session = result;
@@ -601,8 +644,7 @@ function App() {
   async function login(){
     try{
       link.login(identifier).then((result) => {
-          session = result.session
-          restoreSession();
+          newUser(result.session);
       });
     }catch(err){
 
