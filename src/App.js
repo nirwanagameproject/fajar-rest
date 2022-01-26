@@ -12,6 +12,9 @@ function App() {
   let session;
   let buttonL;
   let imgPacksL;
+  let frcoin;
+  let frgas;
+  let frenergy;
   const [loadSession,setLoadSession] = useState(false);
   const [userAccount,setUserAccount] = useState('No wallet linked');
   const [balanceAccount,setBalanceAccount] = useState('');
@@ -63,14 +66,13 @@ function App() {
 
   async function buyPacks(tempId,userKu,pricePacks){
     const action = {
-        account: 'fajarmftoken',
-        name: 'transfer',
+        account: 'fajarmuhf123',
+        name: 'buypack',
         authorization: [session.auth],
         data: {
-          from: (userKu),
-          to : ("fajarmuhf123"),
-          quantity: pricePacks,
-          memo: "buy packs "+tempId
+          templateId: (tempId),
+          newOwner : (userKu),
+          quantity: pricePacks
         }
     }
       const response = await session.transact({action})
@@ -530,7 +532,335 @@ function App() {
 
   }
 
-  async function coba(userStr){
+  async function updateInputValue(koin,evt,nameContent,gambarContent,buttonContent,fee){
+    if(koin=="frcoin"){
+      frcoin = evt.target.value;
+    }
+    else if(koin=="frgas"){
+      frgas = evt.target.value;
+    }
+    else if(koin=="frenergy"){
+      frenergy = evt.target.value;
+    }
+    var receiveContent=[];
+    receiveContent.push(<td key="col41">Receive Amount</td>);
+    receiveContent.push(<td key="col42">{(!isNaN(frcoin) && !isNaN(parseFloat(frcoin)))
+      ? (frcoin*(100-fee)/100) : false}</td>);
+    receiveContent.push(<td key="col43">{(!isNaN(frgas) && !isNaN(parseFloat(frgas)))
+      ? (frgas*(100-fee)/100) : false}</td>);
+    receiveContent.push(<td key="col44">{(!isNaN(frenergy) && !isNaN(parseFloat(frenergy)))
+      ? (frenergy*(100-fee)/100) : false}</td>);
+
+    imgPacksL = [];
+    imgPacksL.push(<p key="wit1">withdraw fee : {fee} %</p>);
+    imgPacksL.push(<table key="wit2" align="center" style={{marginTop: '20px'}} >
+                  <thead>
+                    <tr>
+                      {nameContent}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      {gambarContent}
+                    </tr>
+                    <tr>
+                      {receiveContent}
+                    </tr>
+                    <tr>
+                      {buttonContent}
+                    </tr>
+                  </tbody>
+                </table>);
+    setPacksL(imgPacksL);
+  }
+
+  async function deposit(koin){
+    if(koin=="frcoin"){
+      if (!isNaN(frcoin) && !isNaN(parseFloat(frcoin)))
+      { 
+        const action = {
+          account: 'fajarmftoken',
+          name: 'transfer',
+          authorization: [session.auth],
+          data: {
+            from: String(session.auth.actor),
+            to : ("fajarmuhf123"),
+            quantity: parseFloat(frcoin).toFixed(4)+" FRCOIN",
+            memo: "deposit"
+          }
+        }
+        const response = await session.transact({action})
+        .then(function(response){
+          if(response.processed.receipt.status=="executed"){
+            onShowAlert("success","Deposit successfully.Transaction at "+response.processed.id,"Deposit success",() => {coba(String(session.auth.actor));onCloseAlert()});
+          }
+        })
+        .catch(function (e) {
+          console.log(e);
+          onShowAlert("error","Deposit failed."+e,"Fail Deposit",() => {onCloseAlert()});
+        })
+      }
+      else{
+        onShowAlert("error","Wrong Input Number.","Wrong Number",() => {onCloseAlert()});
+      }
+    }
+    else if(koin=="frgas"){
+      if (!isNaN(frgas) && !isNaN(parseFloat(frgas)))
+      { 
+        const action = {
+          account: 'fajarmftoken',
+          name: 'transfer',
+          authorization: [session.auth],
+          data: {
+            from: String(session.auth.actor),
+            to : ("fajarmuhf123"),
+            quantity: parseFloat(frgas).toFixed(4)+" FRGAS",
+            memo: "deposit"
+          }
+      }
+        const response = await session.transact({action})
+        .then(function(response){
+          if(response.processed.receipt.status=="executed"){
+            onShowAlert("success","Deposit successfully.Transaction at "+response.processed.id,"Deposit success",() => {coba(String(session.auth.actor));onCloseAlert()});
+          }
+        })
+        .catch(function (e) {
+          console.log(e);
+          onShowAlert("error","Deposit failed."+e,"Fail Deposit",() => {onCloseAlert()});
+        })
+
+      }
+      else{
+        onShowAlert("error","Wrong Input Number.","Wrong Number",() => {onCloseAlert()});
+      }
+    }
+    else if(koin=="frenergy"){
+      if (!isNaN(frenergy) && !isNaN(parseFloat(frenergy)))
+      { 
+        const action = {
+          account: 'fajarmftoken',
+          name: 'transfer',
+          authorization: [session.auth],
+          data: {
+            from: String(session.auth.actor),
+            to : ("fajarmuhf123"),
+            quantity: parseFloat(frenergy).toFixed(4)+" FRENERG",
+            memo: "deposit"
+          }
+        }
+        const response = await session.transact({action})
+        .then(function(response){
+          if(response.processed.receipt.status=="executed"){
+            onShowAlert("success","Deposit successfully.Transaction at "+response.processed.id,"Deposit success",() => {coba(String(session.auth.actor));onCloseAlert()});
+          }
+        })
+        .catch(function (e) {
+          console.log(e);
+          onShowAlert("error","Deposit failed."+e,"Fail Deposit",() => {onCloseAlert()});
+        })
+
+
+      }
+      else{
+        onShowAlert("error","Wrong Input Number.","Wrong Number",() => {onCloseAlert()});
+      }
+    }
+  }
+
+  async function withdraw(koin){
+    if(koin=="frcoin"){
+      if (!isNaN(frcoin) && !isNaN(parseFloat(frcoin)))
+      { 
+        const action = {
+          account: 'fajarmuhf123',
+          name: 'withdraw',
+          authorization: [session.auth],
+          data: {
+            from: ("fajarmuhf123"),
+            to : String(session.auth.actor),
+            quantity: parseFloat(frcoin).toFixed(4)+" FRCOIN",
+            memo: "withdraw"
+          }
+        }
+        const response = await session.transact({action})
+        .then(function(response){
+          if(response.processed.receipt.status=="executed"){
+            onShowAlert("success","Deposit successfully.Transaction at "+response.processed.id,"Deposit success",() => {coba(String(session.auth.actor));onCloseAlert()});
+          }
+        })
+        .catch(function (e) {
+          console.log(e);
+          onShowAlert("error","Deposit failed."+e,"Fail Deposit",() => {onCloseAlert()});
+        })
+      }
+      else{
+        onShowAlert("error","Wrong Input Number.","Wrong Number",() => {onCloseAlert()});
+      }
+    }
+    else if(koin=="frgas"){
+      if (!isNaN(frgas) && !isNaN(parseFloat(frgas)))
+      { 
+        const action = {
+          account: 'fajarmuhf123',
+          name: 'withdraw',
+          authorization: [session.auth],
+          data: {
+            from: ("fajarmuhf123"),
+            to : String(session.auth.actor),
+            quantity: parseFloat(frgas).toFixed(4)+" FRGAS",
+            memo: "withdraw"
+          }
+        }
+        const response = await session.transact({action})
+        .then(function(response){
+          if(response.processed.receipt.status=="executed"){
+            onShowAlert("success","Deposit successfully.Transaction at "+response.processed.id,"Deposit success",() => {coba(String(session.auth.actor));onCloseAlert()});
+          }
+        })
+        .catch(function (e) {
+          console.log(e);
+          onShowAlert("error","Deposit failed."+e,"Fail Deposit",() => {onCloseAlert()});
+        })
+
+      }
+      else{
+        onShowAlert("error","Wrong Input Number.","Wrong Number",() => {onCloseAlert()});
+      }
+    }
+    else if(koin=="frenergy"){
+      if (!isNaN(frenergy) && !isNaN(parseFloat(frenergy)))
+      { 
+        const action = {
+          account: 'fajarmuhf123',
+          name: 'withdraw',
+          authorization: [session.auth],
+          data: {
+            from: ("fajarmuhf123"),
+            to : String(session.auth.actor),
+            quantity: parseFloat(frenergy).toFixed(4)+" FRENERG",
+            memo: "withdraw"
+          }
+        }
+        const response = await session.transact({action})
+        .then(function(response){
+          if(response.processed.receipt.status=="executed"){
+            onShowAlert("success","Deposit successfully.Transaction at "+response.processed.id,"Deposit success",() => {coba(String(session.auth.actor));onCloseAlert()});
+          }
+        })
+        .catch(function (e) {
+          console.log(e);
+          onShowAlert("error","Deposit failed."+e,"Fail Deposit",() => {onCloseAlert()});
+        })
+
+
+      }
+      else{
+        onShowAlert("error","Wrong Input Number.","Wrong Number",() => {onCloseAlert()});
+      }
+    }
+  }
+
+  async function getWithdraw(){
+    session = await link.restoreSession(identifier);
+    var userStr = String(session.auth.actor);
+    var hasil = await link.client.v1.chain.get_table_rows({
+        code: "fajarmuhf123",
+        index_position: 1,
+        json: true,
+        key_type: "account",
+        limit: "100",
+        lower_bound: userStr,
+        reverse: false,
+        scope: "fajarmuhf123",
+        show_payer: false,
+        table: "account",
+        upper_bound: userStr
+      });
+    let Frcoin = "0.0000";
+    let Frgas = "0.0000";
+    let Frenergy = "0.0000";
+    for(var i=0;i<hasil["rows"].length;i++){
+      if(hasil["rows"][i]["balance"][0].split(" ")[1]=="FRCOIN"){
+        Frcoin=hasil["rows"][i]["balance"][0].split(" ")[0];
+      }
+      if(hasil["rows"][i]["balance"][0].split(" ")[1]=="FRGAS"){
+        Frgas=hasil["rows"][i]["balance"][0].split(" ")[0];
+      }
+      if(hasil["rows"][i]["balance"][0].split(" ")[1]=="FRGAS"){
+        Frenergy=hasil["rows"][i]["balance"][0].split(" ")[0];
+      }    
+    }
+
+    var nameContent=[];
+    nameContent.push(<td key="col11">Balances</td>);
+    nameContent.push(<td key="col12">{Frcoin} FRCOIN</td>);
+    nameContent.push(<td key="col13">{Frgas} FRGAS</td>);
+    nameContent.push(<td key="col14">{Frenergy} FRENERG</td>);
+
+    var buttonContent=[];
+    buttonContent.push(<td key="col31"></td>);
+    buttonContent.push(<td key="col32"><button onClick={() => {withdraw("frcoin");}}>Withdraw</button></td>);
+    buttonContent.push(<td key="col33"><button onClick={() => {withdraw("frgas");}}>Withdraw</button></td>);
+    buttonContent.push(<td key="col34"><button onClick={() => {withdraw("frenergy");}}>Withdraw</button></td>);
+
+    var hasil2 = await link.client.v1.chain.get_table_rows({
+        code: "fajarmuhf123",
+        index_position: 1,
+        json: true,
+        key_type: "id",
+        limit: "100",
+        lower_bound: 1,
+        reverse: false,
+        scope: "fajarmuhf123",
+        show_payer: false,
+        table: "confaccount",
+        upper_bound: 1
+      });
+    var fee = hasil2["rows"][0]["fee"];
+
+    var receiveContent=[];
+    receiveContent.push(<td key="col41">Receive Amount</td>);
+    receiveContent.push(<td key="col42">{(!isNaN(frcoin) && !isNaN(parseFloat(frcoin)))
+      ? (frcoin*(100-fee)/100) : false}</td>);
+    receiveContent.push(<td key="col43">{(!isNaN(frgas) && !isNaN(parseFloat(frgas)))
+      ? (frgas*(100-fee)/100) : false}</td>);
+    receiveContent.push(<td key="col44">{(!isNaN(frenergy) && !isNaN(parseFloat(frenergy)))
+      ? (frenergy*(100-fee)/100) : false}</td>);
+
+
+    var gambarContent=[];
+    gambarContent.push(<td key="col21">Amount</td>);
+    gambarContent.push(<td key="col22"><input type="text" name="frcoin" onChange={evt => updateInputValue("frcoin",evt,nameContent,gambarContent,buttonContent,fee)}/></td>);
+    gambarContent.push(<td key="col23"><input type="text" name="frgas"  onChange={evt => updateInputValue("frgas",evt,nameContent,gambarContent,buttonContent,fee)}/></td>);
+    gambarContent.push(<td key="col24"><input type="text" name="frenergy" onChange={evt => updateInputValue("frenergy",evt,nameContent,gambarContent,buttonContent,fee)}/></td>);
+
+    imgPacksL = [];
+    imgPacksL.push(<p key="wit1">withdraw fee : {fee} %</p>);
+    imgPacksL.push(<table key="wit2" align="center" style={{marginTop: '20px'}} >
+                  <thead>
+                    <tr>
+                      {nameContent}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      {gambarContent}
+                    </tr>
+                    <tr>
+                      {receiveContent}
+                    </tr>
+                    <tr>
+                      {buttonContent}
+                    </tr>
+                  </tbody>
+                </table>);
+    setPacksL(imgPacksL);
+    setStatusContent("WalletWithdraw");
+  }
+
+  async function getDeposit(){
+    session = await link.restoreSession(identifier);
+    var userStr = String(session.auth.actor);
     var hasil = await link.client.v1.chain.get_table_rows({
         code: "fajarmftoken",
         index_position: 1,
@@ -544,18 +874,104 @@ function App() {
         table: "accounts",
         upper_bound: null
       });
+    let Frcoin = "0.0000";
+    let Frgas = "0.0000";
+    let Frenergy = "0.0000";
+    for(var i=0;i<hasil["rows"].length;i++){
+      if(hasil["rows"][i]["balance"].split(" ")[1]=="FRCOIN"){
+        Frcoin=hasil["rows"][i]["balance"].split(" ")[0];
+      }
+      if(hasil["rows"][i]["balance"].split(" ")[1]=="FRGAS"){
+        Frgas=hasil["rows"][i]["balance"].split(" ")[0];
+      }
+      if(hasil["rows"][i]["balance"].split(" ")[1]=="FRGAS"){
+        Frenergy=hasil["rows"][i]["balance"].split(" ")[0];
+      }    
+    }
+
+    var nameContent=[];
+    nameContent.push(<td key="col11">Balances</td>);
+    nameContent.push(<td key="col12">{Frcoin} FRCOIN</td>);
+    nameContent.push(<td key="col13">{Frgas} FRGAS</td>);
+    nameContent.push(<td key="col14">{Frenergy} FRENERG</td>);
+
+    var buttonContent=[];
+    buttonContent.push(<td key="col31"></td>);
+    buttonContent.push(<td key="col32"><button onClick={() => {deposit("frcoin");}}>Deposit</button></td>);
+    buttonContent.push(<td key="col33"><button onClick={() => {deposit("frgas");}}>Deposit</button></td>);
+    buttonContent.push(<td key="col34"><button onClick={() => {deposit("frenergy");}}>Deposit</button></td>);
+
+    var fee = 0;
+
+    var receiveContent=[];
+    receiveContent.push(<td key="col41">Receive Amount</td>);
+    receiveContent.push(<td key="col42">{(!isNaN(frcoin) && !isNaN(parseFloat(frcoin)))
+      ? (frcoin*(100-fee)/100) : false}</td>);
+    receiveContent.push(<td key="col43">{(!isNaN(frgas) && !isNaN(parseFloat(frgas)))
+      ? (frgas*(100-fee)/100) : false}</td>);
+    receiveContent.push(<td key="col44">{(!isNaN(frenergy) && !isNaN(parseFloat(frenergy)))
+      ? (frenergy*(100-fee)/100) : false}</td>);
+
+    var gambarContent=[];
+    gambarContent.push(<td key="col51">Amount</td>);
+    gambarContent.push(<td key="col52"><input type="text" name="frcoin" onChange={evt => updateInputValue("frcoin",evt,nameContent,gambarContent,buttonContent,fee)}/></td>);
+    gambarContent.push(<td key="col53"><input type="text" name="frgas"  onChange={evt => updateInputValue("frgas",evt,nameContent,gambarContent,buttonContent,fee)}/></td>);
+    gambarContent.push(<td key="col54"><input type="text" name="frenergy" onChange={evt => updateInputValue("frenergy",evt,nameContent,gambarContent,buttonContent,fee)}/></td>);
+
+    imgPacksL = [];
+    imgPacksL.push(<p key="wit1">deposit fee : {fee} %</p>);
+    imgPacksL.push(<table key="wit2" align="center" style={{marginTop: '20px'}} >
+                  <thead>
+                    <tr>
+                      {nameContent}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      {gambarContent}
+                    </tr>
+                    <tr>
+                      {receiveContent}
+                    </tr>
+                    <tr>
+                      {buttonContent}
+                    </tr>
+                  </tbody>
+                </table>);
+    setPacksL(imgPacksL);
+    setStatusContent("WalletDeposit");
+  }
+
+  async function getWallet(){
+    getDeposit();
+  }
+
+  async function coba(userStr){
+    var hasil = await link.client.v1.chain.get_table_rows({
+        code: "fajarmuhf123",
+        index_position: 1,
+        json: true,
+        key_type: "account",
+        limit: "100",
+        lower_bound: userStr,
+        reverse: false,
+        scope: "fajarmuhf123",
+        show_payer: false,
+        table: "account",
+        upper_bound: userStr
+      });
     let frcoin = "0.0000";
     let frgas = "0.0000";
     let frenergy = "0.0000";
     for(var i=0;i<hasil["rows"].length;i++){
-      if(hasil["rows"][i]["balance"].split(" ")[1]=="FRCOIN"){
-        frcoin=hasil["rows"][i]["balance"].split(" ")[0];
+      if(hasil["rows"][i]["balance"][0].split(" ")[1]=="FRCOIN"){
+        frcoin=hasil["rows"][i]["balance"][0].split(" ")[0];
       }
-      if(hasil["rows"][i]["balance"].split(" ")[1]=="FRGAS"){
-        frgas=hasil["rows"][i]["balance"].split(" ")[0];
+      if(hasil["rows"][i]["balance"][0].split(" ")[1]=="FRGAS"){
+        frgas=hasil["rows"][i]["balance"][0].split(" ")[0];
       }
-      if(hasil["rows"][i]["balance"].split(" ")[1]=="FRGAS"){
-        frenergy=hasil["rows"][i]["balance"].split(" ")[0];
+      if(hasil["rows"][i]["balance"][0].split(" ")[1]=="FRGAS"){
+        frenergy=hasil["rows"][i]["balance"][0].split(" ")[0];
       }    
     }
     let bal = ", FRCOIN = "+frcoin+", FRGAS = "+frgas+", FRENERGY = "+frenergy;
@@ -578,8 +994,6 @@ function App() {
         table: "account",
         upper_bound: userKu
       });
-      console.log(hasil);
-      console.log(hasil["rows"].length);
 
     if(hasil["rows"].length == 0){
       const action = {
@@ -626,6 +1040,7 @@ function App() {
       setLoadSession(false);
       setBalanceAccount("");
       setPacksL('');
+      setStatusContent('');
     }catch(err){
 
       console.log(err);
@@ -704,6 +1119,7 @@ function App() {
           </li>
           <li><a onClick={getPacks}>Buy Packs</a></li>
           <li><a onClick={getCooking}>Cooking</a></li>
+          <li><a onClick={getWallet}>Wallet</a></li>
           <li><a onClick={logout}>Log out</a></li>
         </ul>
       </nav>
@@ -713,6 +1129,12 @@ function App() {
         ? (<button onClick={getNftUnclaimPack}>Unclaim Packs</button>)
         : (statusContent == "UnclaimPacks")
         ? (<button onClick={getNftPack}>My Packs</button>)
+        : false
+      }
+      {(statusContent == "WalletDeposit")
+        ? (<button onClick={getWithdraw}>Withdraw</button>)
+        : (statusContent == "WalletWithdraw")
+        ? (<button onClick={getDeposit}>Deposit</button>)
         : false
       }
       <div id='balance'>Hello {userAccount} {balanceAccount}</div>
