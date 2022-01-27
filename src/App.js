@@ -7,6 +7,8 @@ import AnchorLinkBrowserTransport from 'anchor-link-browser-transport'
 import {useEffect,useState} from 'react';
 import Response from './Response.js'
 import Alert from 'react-popup-alert'
+import slot from './img/slot.png'
+
 function App() {
   const identifier = 'example';
   let session;
@@ -15,6 +17,7 @@ function App() {
   let frcoin;
   let frgas;
   let frenergy;
+  const [judul,setJudul] = useState();
   const [loadSession,setLoadSession] = useState(false);
   const [userAccount,setUserAccount] = useState('No wallet linked');
   const [balanceAccount,setBalanceAccount] = useState('');
@@ -133,7 +136,8 @@ function App() {
                   </tbody>
                 </table>;
       setPacksL(imgPacksL);
-    
+      setStatusContent("Cooking");
+      setJudul(<h2>Cooking</h2>);
     });
   }
 
@@ -184,6 +188,7 @@ function App() {
                       </table>;
       setPacksL(imgPacksL);
       setStatusContent("Packs");
+      setJudul(<h2>My Packs</h2>);
       
     });
   }
@@ -310,6 +315,7 @@ function App() {
                         </table>;
         setPacksL(imgPacksL);
         setStatusContent("UnclaimPacks");
+        setJudul(<h2>Unclaim Packs</h2>);
       });
       i++;
     }
@@ -329,6 +335,7 @@ function App() {
                       </table>;
       setPacksL(imgPacksL);
       setStatusContent("UnclaimPacks");
+      setJudul(<h2>Unclaim Packs</h2>);
     }
   }
 
@@ -373,6 +380,7 @@ function App() {
                       </table>;
       setPacksL(imgPacksL);
       setStatusContent("Food");
+      setJudul(<h2>My Food</h2>);
     });
   }
 
@@ -416,7 +424,7 @@ function App() {
                       </table>;
       setPacksL(imgPacksL);
       setStatusContent("Tools");
-      
+      setJudul(<h2>My Tools</h2>);
     });
   }
 
@@ -525,11 +533,233 @@ function App() {
 
 
         setStatusContent("BuyPacks");
+        setJudul(<h2>Buy Packs</h2>);
     })
   }
 
-  async function getCooking(){
+  async function getRecipes(){
+    session = await link.restoreSession(identifier);
 
+    var hasil = await link.client.v1.chain.get_table_rows({
+      code: "fajarmuhf123",
+      index_position: 1,
+      json: true,
+      key_type: "",
+      limit: "100",
+      lower_bound: null,
+      reverse: false,
+      scope: "fajarmuhf123",
+      show_payer: false,
+      table: "cuisine",
+      upper_bound: null
+    });
+    var kNama = [];
+    var kGambar = [];
+    var kFood = [];
+    var kTools = [];
+    var kNutrition = [];
+    var kCosumtion = [];
+        
+    for(var i=0;i<hasil["rows"].length;i++){
+      const cNama = "kNama"+i;
+      const cGambar = "kGambar"+i;
+      const cFood = "kFood"+i;
+      const cTools = "kTools"+i;
+      const cNutrition = "kNutrition"+i;
+      const cNutritionUL = "kNutritionUL"+i;
+      const cCosumption = "kCosumption"+i;
+      const temp_id = hasil["rows"][i]["template_id"];
+      const food_req = hasil["rows"][i]["food_req"];
+      const tools_req = hasil["rows"][i]["tools_req"];
+      const energy_req = hasil["rows"][i]["energy"];
+      const charge_time_req = hasil["rows"][i]["charge_time"];
+      const max_cooking_req = hasil["rows"][i]["max_cooking"];
+      var gas_req = 0;
+      fetch(
+      "https://test.wax.api.atomicassets.io/atomicassets/v1/templates?collection_name=fajarmuhf123&schema_name=cuisine&limit=100"
+      ).then((res) => res.json())
+      .then((json) => {
+        for(var j=0;j<json["data"].length;j++){
+          if(json["data"][j]["template_id"]==temp_id){
+            const name_cuisine = json["data"][j]["name"];
+            const energy_cuisine = json["data"][j]["immutable_data"]["energy"];
+            const karbohidrat_cuisine = json["data"][j]["immutable_data"]["karbohidrat"];
+            const protein_cuisine = json["data"][j]["immutable_data"]["protein"];
+            const lemak_cuisine = json["data"][j]["immutable_data"]["lemak"];
+            const food_list = [];
+            const tools_list = [];
+            kNama.push(<td key={cNama}>{name_cuisine}</td>);
+
+            const energyK = "energyK"+i;
+            const karboK = "karboK"+i;
+            const proteinK = "proteinK"+i;
+            const lemakK = "lemakK"+i;
+
+            const nutrition_list = [];
+            nutrition_list.push(<li key={energyK}>energy : {energy_cuisine}</li>);
+            nutrition_list.push(<li key={karboK}>karbohidrat : {karbohidrat_cuisine}</li>);
+            nutrition_list.push(<li key={proteinK}>protein : {protein_cuisine}</li>);
+            nutrition_list.push(<li key={lemakK}>lemak : {lemak_cuisine}</li>);
+
+            kNutrition.push(<td key={cNutrition}><p>nutrition</p><ul>{nutrition_list}</ul></td>);
+
+            const gambar_cuisine = 'https://ipfs.io/ipfs/'+json["data"][j]["immutable_data"]["img"];
+            kGambar.push(<td key={cGambar}><img src={gambar_cuisine} style={{width: '120px',height:'120px'}} /></td>);               
+
+            fetch(
+            "https://test.wax.api.atomicassets.io/atomicassets/v1/templates?collection_name=fajarmuhf123&schema_name=food&limit=100"
+            ).then((res2) => res2.json())
+            .then((json2) => {
+              for(var k=0;k<json2["data"].length;k++){
+                for(var l=0;l<food_req.length;l++){
+                  if(json2["data"][k]["template_id"] == food_req[l]){
+                    const liFood = "LiFood"+l;
+                    const name_food = json2["data"][k]["name"];
+                    const gambar_food = 'https://ipfs.io/ipfs/'+json2["data"][k]["immutable_data"]["img"];
+                    const gas_food = json2["data"][k]["immutable_data"]["gas_cosumption"];
+                    gas_req += parseInt(gas_food);
+                    food_list.push(<li key={liFood}>
+                      <table>
+                        <thead>
+                          <tr>
+                            <td>{name_food}</td>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                          <td><img src={gambar_food} style={{width: '120px',height:'120px'}} /></td>
+                        </tr>
+                      </tbody>
+                    </table></li>);
+                    if(l==food_req.length-1){
+                      const gas_cosumption_req = gas_req;
+                      fetch(
+                      "https://test.wax.api.atomicassets.io/atomicassets/v1/templates?collection_name=fajarmuhf123&schema_name=tools&limit=100"
+                      ).then((res3) => res3.json())
+                      .then((json3) => {
+                        for(var k1=0;k1<json3["data"].length;k1++){
+                          for(var l1=0;l1<tools_req.length;l1++){
+                            if(json3["data"][k1]["template_id"] == tools_req[l1]){            
+                              const energyReqK = "energyReqK"+i;
+                              const chargeTimeReqK = "chargetimeReqK"+i;
+                              const maxCookingReqK = "maxcookingReqK"+i;
+                              const gasReqK = "gasReqK"+i;
+
+                              const cosumption_list = [];
+                              cosumption_list.push(<li key={energyReqK}>energy : {energy_req}</li>);
+                              cosumption_list.push(<li key={gasReqK}>gas : {gas_cosumption_req}</li>);
+                              cosumption_list.push(<li key={chargeTimeReqK}>charge time : {charge_time_req}</li>);
+                              cosumption_list.push(<li key={maxCookingReqK}>max cooking : {max_cooking_req}</li>);
+                              
+                              kCosumtion.push(<td key={cCosumption}><p>cosumption</p><ul>{cosumption_list}</ul></td>);
+
+                              const liTools = "LiTools"+l1;
+                              const name_tools = json3["data"][k1]["name"];
+                              const gambar_tools = 'https://ipfs.io/ipfs/'+json3["data"][k1]["immutable_data"]["img"];
+                              tools_list.push(<li key={liTools}>
+                                <table>
+                                  <thead>
+                                    <tr>
+                                      <td>{name_tools}</td>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  <tr>
+                                    <td><img src={gambar_tools} style={{width: '120px',height:'120px'}} /></td>
+                                  </tr>
+                                </tbody>
+                              </table></li>);
+                              if(l1==tools_req.length-1){
+                                kTools.push(<td key={cTools}><p>tools require</p><ul>{tools_list}</ul></td>);
+                                kFood.push(<td key={cFood}><p>food require</p><ul>{food_list}</ul></td>);
+                                imgPacksL = <table align='center' style={{marginTop: '20px'}} >
+                                                <thead>
+                                                  <tr key="nameNft">
+                                                    {kNama}
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                  <tr key="gambarNft">
+                                                    {kGambar}
+                                                  </tr>
+                                                  <tr key="nutritionNft">
+                                                    {kNutrition}
+                                                  </tr>    
+                                                  <tr key="cosumptionNft">
+                                                    {kCosumtion}
+                                                  </tr>    
+                                                  <tr key="foodNft">
+                                                    {kFood}
+                                                  </tr> 
+                                                  <tr key="toolsNft">
+                                                    {kTools}
+                                                  </tr>   
+                                                </tbody>
+                                                </table>;
+                                setPacksL(imgPacksL);
+                              }
+                            }
+                          }
+                        }
+                      });
+                    }
+                  }
+                }
+              }
+             });
+          }
+        }
+      });
+    }
+
+    setStatusContent("Recipes");  
+    setJudul(<h2>List Recipes</h2>);
+  }
+
+  async function getCooking(){
+      session = await link.restoreSession(identifier);
+
+      var hasil = await link.client.v1.chain.get_table_rows({
+        code: "fajarmuhf123",
+        index_position: 1,
+        json: true,
+        key_type: "account",
+        limit: "100",
+        lower_bound: String(session.auth.actor),
+        reverse: false,
+        scope: "fajarmuhf123",
+        show_payer: false,
+        table: "account",
+        upper_bound: String(session.auth.actor)
+      });
+
+      var kNama = [];
+      for(var i=0;i<hasil["rows"][0]["slot_cooking"];i++){
+        var keku = "kNama"+i;
+        kNama.push(<td key={keku}><img src={slot} style={{width: '120px',height:'120px'}}/></td>);
+      }
+
+      var kButton = [];
+      for(var i=0;i<hasil["rows"][0]["slot_cooking"];i++){
+        var keku = "kButton"+i;
+        kButton.push(<td key={keku}><button>Add</button></td>);
+      }
+      
+      imgPacksL = <table align='center' style={{marginTop: '20px'}} >
+                      <thead>
+                        <tr key="nameNft">
+                          {kNama}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr key="nameNft">
+                          {kButton}
+                        </tr>  
+                      </tbody>
+                      </table>;
+      setPacksL(imgPacksL);
+      setStatusContent("Cooking");
+      setJudul(<h2>Cooking</h2>);
   }
 
   async function updateInputValue(koin,evt,nameContent,gambarContent,buttonContent,fee){
@@ -856,6 +1086,7 @@ function App() {
                 </table>);
     setPacksL(imgPacksL);
     setStatusContent("WalletWithdraw");
+    setJudul(<h2>Withdraw</h2>);
   }
 
   async function getDeposit(){
@@ -940,6 +1171,7 @@ function App() {
                 </table>);
     setPacksL(imgPacksL);
     setStatusContent("WalletDeposit");
+    setJudul(<h2>Deposit</h2>);
   }
 
   async function getWallet(){
@@ -1041,6 +1273,7 @@ function App() {
       setBalanceAccount("");
       setPacksL('');
       setStatusContent('');
+      setJudul('');
     }catch(err){
 
       console.log(err);
@@ -1123,6 +1356,13 @@ function App() {
           <li><a onClick={logout}>Log out</a></li>
         </ul>
       </nav>
+        : false
+      }
+      {judul}
+      {(statusContent == "Cooking")
+        ? (<button onClick={getRecipes}>Recipes</button>)
+        : (statusContent == "Recipes")
+        ? (<button onClick={getCooking}>Cooking</button>)
         : false
       }
       {(statusContent == "Packs")
