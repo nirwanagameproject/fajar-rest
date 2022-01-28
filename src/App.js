@@ -17,6 +17,8 @@ function App() {
   let frcoin;
   let frgas;
   let frenergy;
+  let foodSlot;
+  let toolsSlot;
   const [judul,setJudul] = useState();
   const [loadSession,setLoadSession] = useState(false);
   const [userAccount,setUserAccount] = useState('No wallet linked');
@@ -716,7 +718,257 @@ function App() {
     setJudul(<h2>List Recipes</h2>);
   }
 
+  async function addTools(asset_id,template_id,name_tools,id_slot){
+    for(var mo=0;mo<toolsSlot.length;mo++){
+      if(toolsSlot[mo]["asset_id"] == asset_id){
+          toolsSlot.splice(mo, 1);
+          getAddTools(id_slot);
+          return;        
+      }
+      if(toolsSlot[mo]["template_id"] == template_id){
+        onShowAlert("error","Same raw material","Fail Add Raw",() => onCloseAlert());
+        return;
+      }
+    }
+    const assetnya = {"asset_id" : asset_id,"template_id" : template_id,"name_tools": name_tools};
+    toolsSlot.push(assetnya);
+    getAddTools(id_slot);
+  }
+
+  async function addFood(asset_id,template_id,name_food,id_slot){
+    for(var mo=0;mo<foodSlot.length;mo++){
+      if(foodSlot[mo]["asset_id"] == asset_id){
+          foodSlot.splice(mo, 1);
+          getAddRaw(id_slot);
+          return;        
+      }
+      if(foodSlot[mo]["template_id"] == template_id){
+        onShowAlert("error","Same raw material","Fail Add Raw",() => onCloseAlert());
+        return;
+      }
+    }
+    const assetnya = {"asset_id" : asset_id,"template_id" : template_id,"name_food": name_food};
+    foodSlot.push(assetnya);
+    getAddRaw(id_slot);
+  }
+
+  async function getAddRaw(id_slot){
+    session = await link.restoreSession(identifier);
+
+    fetch(
+      "https://aa-testnet.neftyblocks.com/atomicmarket/v1/assets?page=1&limit=10&order=desc&sort=transferred&owner="+new String(session.auth.actor)+"&collection_name=fajarmuhf123&schema_name=food"
+    ).then((res) => res.json())
+    .then((json) => {
+      var banyak = json["data"].length;
+      var i=0;
+      let konten=[];
+      let kNama=[];
+      let kImg=[];
+      let kRarity=[];
+      let kButton=[];
+      let kButtonAgree=[];
+      while(i<banyak){
+        let nameNow = "nameNft"+i;
+        let imgNftNow = "imageNft"+i;
+        let rarityNow = "rarityNft"+i;
+        let buttonNow = "buttonNft"+i;
+        let namaku = json["data"][i]["data"]["name"];
+        const asset_id = json["data"][i]["asset_id"];
+        const template_id = json["data"][i]["template"]["template_id"];
+        let imgku = 'https://ipfs.io/ipfs/'+json["data"][i]["data"]["img"];
+        let rarityku = json["data"][i]["data"]["rarity"];
+        kNama.push(<td key={nameNow}>{namaku}</td>);
+        kImg.push(<td key={imgNftNow}><img src={imgku} style={{width: '120px',height:'120px'}}></img></td>);
+        kRarity.push(<td key={rarityNow}>{rarityku}</td>);
+        var tulisan = "Add";
+        for(var mo=0;mo<foodSlot.length;mo++){
+          if(foodSlot[mo]["asset_id"] == asset_id){
+            tulisan = "Remove";
+          }
+        }
+        kButton.push(<td key={buttonNow}><button onClick={() => {addFood(asset_id,template_id,namaku,id_slot);}}>{tulisan}</button></td>);
+        i++;
+      }
+      kButtonAgree.push(<td key="baCook" colSpan={banyak} onClick={() => {getCookingSlot(id_slot);}}><button>Pick up</button></td>);
+
+      konten.push(<tr key="imageNft">{kImg}</tr>);
+      konten.push(<tr key="rarityNft">{kRarity}</tr>);
+      konten.push(<tr key="buttonNft">{kButton}</tr>);
+      konten.push(<tr key="buttonAgreeNft">{kButtonAgree}</tr>);
+      imgPacksL = <table align='center' style={{marginTop: '20px'}} >
+                      <thead>
+                        <tr key="nameNft">
+                          {kNama}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {konten}
+                      </tbody>
+                      </table>;
+      setPacksL(imgPacksL);
+      setStatusContent("AddFood");
+      setJudul(<h2>Pick Raw Food</h2>);
+    });
+  }
+
+  async function getAddTools(id_slot){
+    session = await link.restoreSession(identifier);
+
+    fetch(
+      "https://aa-testnet.neftyblocks.com/atomicmarket/v1/assets?page=1&limit=10&order=desc&sort=transferred&owner="+new String(session.auth.actor)+"&collection_name=fajarmuhf123&schema_name=tools"
+    ).then((res) => res.json())
+    .then((json) => {
+      var banyak = json["data"].length;
+      var i=0;
+      let konten=[];
+      let kNama=[];
+      let kImg=[];
+      let kRarity=[];
+      let kButton=[];
+      let kButtonAgree=[];
+      while(i<banyak){
+        let nameNow = "nameNft"+i;
+        let imgNftNow = "imageNft"+i;
+        let rarityNow = "rarityNft"+i;
+        let buttonNow = "buttonNft"+i;
+        let namaku = json["data"][i]["data"]["name"];
+        const asset_id = json["data"][i]["asset_id"];
+        const template_id = json["data"][i]["template"]["template_id"];
+        let imgku = 'https://ipfs.io/ipfs/'+json["data"][i]["data"]["img"];
+        let rarityku = json["data"][i]["data"]["rarity"];
+        kNama.push(<td key={nameNow}>{namaku}</td>);
+        kImg.push(<td key={imgNftNow}><img src={imgku} style={{width: '120px',height:'120px'}}></img></td>);
+        kRarity.push(<td key={rarityNow}>{rarityku}</td>);
+        var tulisan = "Add";
+        for(var mo=0;mo<toolsSlot.length;mo++){
+          if(toolsSlot[mo]["asset_id"] == asset_id){
+            tulisan = "Remove";
+          }
+        }
+        kButton.push(<td key={buttonNow}><button onClick={() => {addTools(asset_id,template_id,namaku,id_slot);}}>{tulisan}</button></td>);
+        i++;
+      }
+      kButtonAgree.push(<td key="baCook" colSpan={banyak} onClick={() => {getCookingSlot(id_slot);}}><button>Pick up</button></td>);
+
+      konten.push(<tr key="imageNft">{kImg}</tr>);
+      konten.push(<tr key="rarityNft">{kRarity}</tr>);
+      konten.push(<tr key="buttonNft">{kButton}</tr>);
+      konten.push(<tr key="buttonAgreeNft">{kButtonAgree}</tr>);
+      imgPacksL = <table align='center' style={{marginTop: '20px'}} >
+                      <thead>
+                        <tr key="nameNft">
+                          {kNama}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {konten}
+                      </tbody>
+                      </table>;
+      setPacksL(imgPacksL);
+      setStatusContent("AddFood");
+      setJudul(<h2>Pick Raw Food</h2>);
+    });
+  }
+
+  async function cookNow(id_slot){
+    let req_food_temp_id = [];
+    let req_food_asset_id = [];
+    for(var mo=0;mo<foodSlot.length;mo++){
+      req_food_temp_id.push(foodSlot[mo].template_id);
+      req_food_asset_id.push(foodSlot[mo].asset_id);
+    }
+    let req_tools_temp_id = [];
+    let req_tools_asset_id = [];
+    for(var mo=0;mo<toolsSlot.length;mo++){
+      req_tools_temp_id.push(toolsSlot[mo].template_id);
+      req_tools_asset_id.push(toolsSlot[mo].asset_id);
+    }
+    let req_asset_id = [];
+    for(var mo=0;mo<req_food_asset_id.length;mo++){
+      req_asset_id.push(req_food_asset_id[mo]);
+    }
+    for(var mo=0;mo<req_tools_asset_id.length;mo++){
+      req_asset_id.push(req_tools_asset_id[mo]);
+    }
+    const action = {
+        account: 'atomicassets',
+        name: 'transfer',
+        authorization: [session.auth],
+        data: {
+          from : String(session.auth.actor),
+          to : "fajarmuhf123",
+          asset_ids : req_asset_id,
+          memo : "cooking "+id_slot+" "+req_food_temp_id+" "+req_food_asset_id+" "+req_tools_temp_id+" "+req_tools_asset_id
+        }
+    }
+      const response = await session.transact({action})
+      .then(function(response){
+        if(response.processed.receipt.status=="executed"){
+          onShowAlert("success","Cooking successfully.Transaction at "+response.processed.id,"Cooking Success",() => {getCooking();onCloseAlert()});
+        }
+      })
+      .catch(function (e) {
+        console.log(e);
+        onShowAlert("error","Cooking failed."+e,"Fail Cooking",() => {onCloseAlert()});
+      })
+  }
+
+  async function getCookingSlot(id_slot){
+    session = await link.restoreSession(identifier);
+    let kNama = [];
+    kNama.push(<td key="rFood">Raw Food</td>);
+    kNama.push(<td key="rTools">Tools</td>);
+    let kSlot = [];
+    let listRawFood = [];
+    let listToolsFood = [];
+    for(var mo=0;mo<foodSlot.length;mo++){
+      const keyRawFood = "raw"+mo;
+      const nameFoods = foodSlot[mo].name_food;
+      listRawFood.push(<li key={keyRawFood} style={{color:"white"}}>{nameFoods}</li>);
+    }
+    for(var mo=0;mo<toolsSlot.length;mo++){
+      const keyRawTools = "tools"+mo;
+      const nameTools = toolsSlot[mo].name_tools;
+      listToolsFood.push(<li key={keyRawTools} style={{color:"white"}}>{nameTools}</li>);
+    }
+    let RawFood = <ul>{listRawFood}</ul>;
+    let ToolsFood = <ul>{listToolsFood}</ul>;
+    kSlot.push(<td key="gFood"><div style={{paddingTop: '3px',backgroundImage: `url(${slot})`,backgroundPosition: 'center',backgroundSize: 'cover',backgroundRepeat: 'no-repeat',width: '120px',height:'120px'}}>{RawFood}</div></td>);
+    kSlot.push(<td key="gTools"><div style={{paddingTop: '3px',backgroundImage: `url(${slot})`,backgroundPosition: 'center',backgroundSize: 'cover',backgroundRepeat: 'no-repeat',width: '120px',height:'120px'}}>{ToolsFood}</div></td>);
+    
+    let kButton = [];
+    kButton.push(<td key="bFood" onClick={() => {getAddRaw(id_slot)}}><button>Add</button></td>);
+    kButton.push(<td key="bTools" onClick={() => {getAddTools(id_slot)}}><button>Add</button></td>);
+
+    let kButtonAgree = [];
+    kButtonAgree.push(<td key="baCook" colSpan="2" onClick={() => {cookNow(id_slot);}}><button>Cook</button></td>);
+
+    imgPacksL = <table align='center' style={{marginTop: '20px'}} >
+                      <thead>
+                        <tr key="nameNft">
+                          {kNama}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr key="slotNft">
+                          {kSlot}
+                        </tr> 
+                        <tr key="buttonNft">
+                          {kButton}
+                        </tr>  
+                        <tr key="buttonAgreeNft">
+                          {kButtonAgree}
+                        </tr>  
+                      </tbody>
+                      </table>;
+      setPacksL(imgPacksL);
+      setStatusContent("CookingSlot");
+      setJudul(<h2>Pick Ingredients (Slot {id_slot})</h2>);
+  }
+
   async function getCooking(){
+      foodSlot = [];
+      toolsSlot = [];
       session = await link.restoreSession(identifier);
 
       var hasil = await link.client.v1.chain.get_table_rows({
@@ -732,19 +984,75 @@ function App() {
         table: "account",
         upper_bound: String(session.auth.actor)
       });
+      var hasil2 = await link.client.v1.chain.get_table_rows({
+        code: "fajarmuhf123",
+        index_position: 2,
+        json: true,
+        key_type: "name",
+        limit: "100",
+        lower_bound: String(session.auth.actor),
+        reverse: false,
+        scope: "fajarmuhf123",
+        show_payer: false,
+        table: "cooking",
+        upper_bound: String(session.auth.actor)
+      });
+
+
 
       var kNama = [];
-      for(var i=0;i<hasil["rows"][0]["slot_cooking"];i++){
-        var keku = "kNama"+i;
-        kNama.push(<td key={keku}><img src={slot} style={{width: '120px',height:'120px'}}/></td>);
-      }
-
       var kButton = [];
       for(var i=0;i<hasil["rows"][0]["slot_cooking"];i++){
+        var keku = "kNama"+i;
+        var CuisineFood = "";
+        kNama.push(<td key={keku}><div style={{paddingTop: '3px',backgroundImage: `url(${slot})`,backgroundPosition: 'center',backgroundSize: 'cover',backgroundRepeat: 'no-repeat',width: '120px',height:'120px'}}>{CuisineFood}</div></td>);  
+
         var keku = "kButton"+i;
-        kButton.push(<td key={keku}><button>Add</button></td>);
+        const id_slot = i+1;
+        kButton.push(<td key={keku} onClick={() => {getCookingSlot(id_slot)}}><button>Add</button></td>);
       }
-      
+
+      for(var i=0;i<hasil["rows"][0]["slot_cooking"];i++){
+        for(var j=0;j<hasil2["rows"].length;j++){
+          if(hasil2["rows"][j]["slot_id"]==(i+1)){
+            const cuisine_id = (hasil2["rows"][j]["cuisine_id"]);
+
+            var hasilku = await link.client.v1.chain.get_table_rows({
+              code: "fajarmuhf123",
+              index_position: 1,
+              json: true,
+              key_type: "int",
+              limit: "100",
+              lower_bound: cuisine_id,
+              reverse: false,
+              scope: "fajarmuhf123",
+              show_payer: false,
+              table: "cuisine",
+              upper_bound: cuisine_id
+            });
+
+            const template_id = hasilku["rows"][j]["template_id"];
+
+            var hasils = await fetch(
+              "https://test.wax.api.atomicassets.io/atomicassets/v1/templates?collection_name=fajarmuhf123&schema_name=cuisine&limit=1000&lower_bound="+template_id+"&upper_bound="+(template_id+1))
+            .then((res) => res.json())
+            .then((json) => {
+              const keku = "kNama"+i;
+              const namaCuisine = (json["data"][0]["name"]);
+              const gambarCuisine = 'https://ipfs.io/ipfs/'+(json["data"][0]["immutable_data"]["img"]);
+
+              const CuisineFood = <img src={gambarCuisine} style={{width: '120px',height:'120px'}}/>;
+
+              kNama[i] = (<td key={keku}><div style={{paddingTop: '3px',backgroundImage: `url(${slot})`,backgroundPosition: 'center',backgroundSize: 'cover',backgroundRepeat: 'no-repeat',width: '120px',height:'120px'}}>{CuisineFood}</div></td>);
+              const keku2 = "kButton"+i;
+              const id_slot = i+1;
+              kButton[i] = (<td key={keku2} onClick={() => {getCookingSlot(id_slot)}}><button>Add</button></td>);
+
+            });
+          }
+        }
+      }
+     
       imgPacksL = <table align='center' style={{marginTop: '20px'}} >
                       <thead>
                         <tr key="nameNft">
@@ -752,7 +1060,7 @@ function App() {
                         </tr>
                       </thead>
                       <tbody>
-                        <tr key="nameNft">
+                        <tr key="slotNft">
                           {kButton}
                         </tr>  
                       </tbody>
@@ -1238,7 +1546,6 @@ function App() {
       }
       const response = await sesi.transact({action})
       .then(function(response){
-          console.log("halo");
           session = sesi;
           restoreSession();
       }).catch(function (e) {
