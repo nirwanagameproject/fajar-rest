@@ -23,6 +23,7 @@ function App() {
   const [loadSession,setLoadSession] = useState(false);
   const [userAccount,setUserAccount] = useState('No wallet linked');
   const [balanceAccount,setBalanceAccount] = useState('');
+  const [propsAccount,setPropsAccount] = useState('');
   const [packsL,setPacksL] = useState('');
   const [statusContent,setStatusContent] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
@@ -1503,7 +1504,16 @@ function App() {
     let frcoin = "0.0000";
     let frgas = "0.0000";
     let frenergy = "0.0000";
+    let gas = 0;
+    let max_gas = 0;
+    let energy = 0;
+    let max_energy = 0;
     for(var i=0;i<hasil["rows"].length;i++){
+      gas=hasil["rows"][i]["gas"];
+      max_gas=hasil["rows"][i]["max_gas"];
+      energy=hasil["rows"][i]["energy"];
+      max_energy=hasil["rows"][i]["max_energy"];
+
       if(hasil["rows"][i]["balance"][0].split(" ")[1]=="FRCOIN"){
         frcoin=hasil["rows"][i]["balance"][0].split(" ")[0];
       }
@@ -1515,8 +1525,9 @@ function App() {
       }    
     }
     let bal = ", FRCOIN = "+frcoin+", FRGAS = "+frgas+", FRENERGY = "+frenergy;
+    let prop = "gas = ("+gas+"/"+max_gas+"), energy = ("+energy+"/"+max_energy+")";
     setBalanceAccount(bal);
-      
+    setPropsAccount(prop);  
   }
 
   async function newUser(sesi){
@@ -1685,6 +1696,7 @@ function App() {
         : false
       }
       <div id='balance'>Hello {userAccount} {balanceAccount}</div>
+      <div id='props'>{propsAccount}</div>
       <div>
         {buttonL}
       </div>
