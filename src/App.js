@@ -10,6 +10,7 @@ import Alert from 'react-popup-alert'
 import slot from './img/slot.png'
 
 function App() {
+
   const identifier = 'example';
   let session;
   let buttonL;
@@ -19,6 +20,8 @@ function App() {
   let frenergy;
   let foodSlot;
   let toolsSlot;
+  let statusTimerCooking = false;
+  const [timerCooking,setTimerCooking] = useState();
   const [judul,setJudul] = useState();
   const [loadSession,setLoadSession] = useState(false);
   const [userAccount,setUserAccount] = useState('No wallet linked');
@@ -95,8 +98,7 @@ function App() {
   }
 
   async function getClaimedNft(trxId){
-    
-    session = await link.restoreSession(identifier);
+    session = await initilisasi();
 
     let banyakAksi = 0;
     let json;
@@ -145,8 +147,7 @@ function App() {
   }
 
   async function getNftPack(){
-
-    session = await link.restoreSession(identifier);
+    session = await initilisasi();
 
     fetch(
       "https://aa-testnet.neftyblocks.com/atomicmarket/v1/assets?page=1&limit=10&order=desc&sort=transferred&owner="+new String(session.auth.actor)+"&collection_name=fajarmuhf123&schema_name=packs"
@@ -259,7 +260,7 @@ function App() {
   }
 
   async function getNftUnclaimPack(){
-    session = await link.restoreSession(identifier);
+    session = await initilisasi();
 
     var json = await link.client.v1.chain.get_table_rows({
         code: "atomicpacksx",
@@ -344,7 +345,7 @@ function App() {
 
 
   async function getNft(){
-    session = await link.restoreSession(identifier);
+    session = await initilisasi();
 
     fetch(
       "https://aa-testnet.neftyblocks.com/atomicmarket/v1/assets?page=1&limit=10&order=desc&sort=transferred&owner="+new String(session.auth.actor)+"&collection_name=fajarmuhf123&schema_name=food"
@@ -388,7 +389,7 @@ function App() {
   }
 
   async function getNftTool(){
-    session = await link.restoreSession(identifier);
+    session = await initilisasi();
 
     fetch(
       "https://aa-testnet.neftyblocks.com/atomicmarket/v1/assets?page=1&limit=10&order=desc&sort=transferred&owner="+new String(session.auth.actor)+"&collection_name=fajarmuhf123&schema_name=tools"
@@ -432,7 +433,7 @@ function App() {
   }
 
   async function getPacksContent(json){
-    session = await link.restoreSession(identifier);
+    session = await initilisasi();
 
     var hasil = await link.client.v1.chain.get_table_rows({
       code: "fajarmuhf123",
@@ -525,7 +526,7 @@ function App() {
   }
 
   async function getPacks(){
-    session = await link.restoreSession(identifier);
+    session = await initilisasi();
 
     fetch(
       "https://test.wax.api.atomicassets.io/atomicassets/v1/templates?collection_name=fajarmuhf123&schema_name=packs&limit=1000")
@@ -534,14 +535,13 @@ function App() {
 
         let pricePacks = getPacksContent(json);
 
-
         setStatusContent("BuyPacks");
         setJudul(<h2>Buy Packs</h2>);
     })
   }
 
   async function getRecipes(){
-    session = await link.restoreSession(identifier);
+    session = await initilisasi();
 
     var hasil = await link.client.v1.chain.get_table_rows({
       code: "fajarmuhf123",
@@ -754,7 +754,7 @@ function App() {
   }
 
   async function getAddRaw(id_slot){
-    session = await link.restoreSession(identifier);
+    session = await initilisasi();
 
     fetch(
       "https://aa-testnet.neftyblocks.com/atomicmarket/v1/assets?page=1&limit=10&order=desc&sort=transferred&owner="+new String(session.auth.actor)+"&collection_name=fajarmuhf123&schema_name=food"
@@ -813,7 +813,7 @@ function App() {
   }
 
   async function getAddTools(id_slot){
-    session = await link.restoreSession(identifier);
+    session = await initilisasi();
 
     fetch(
       "https://aa-testnet.neftyblocks.com/atomicmarket/v1/assets?page=1&limit=10&order=desc&sort=transferred&owner="+new String(session.auth.actor)+"&collection_name=fajarmuhf123&schema_name=tools"
@@ -871,6 +871,10 @@ function App() {
     });
   }
 
+  async function claimCook(id_slot){
+
+  }
+
   async function cookNow(id_slot){
     let req_food_temp_id = [];
     let req_food_asset_id = [];
@@ -905,7 +909,7 @@ function App() {
       const response = await session.transact({action})
       .then(function(response){
         if(response.processed.receipt.status=="executed"){
-          onShowAlert("success","Cooking successfully.Transaction at "+response.processed.id,"Cooking Success",() => {getCooking();onCloseAlert()});
+          onShowAlert("success","Cooking successfully.Transaction at "+response.processed.id,"Cooking Success",() => {getCooking();coba(String(session.auth.actor));onCloseAlert()});
         }
       })
       .catch(function (e) {
@@ -915,7 +919,8 @@ function App() {
   }
 
   async function getCookingSlot(id_slot){
-    session = await link.restoreSession(identifier);
+    session = await initilisasi();
+
     let kNama = [];
     kNama.push(<td key="rFood">Raw Food</td>);
     kNama.push(<td key="rTools">Tools</td>);
@@ -967,10 +972,18 @@ function App() {
       setJudul(<h2>Pick Ingredients (Slot {id_slot})</h2>);
   }
 
+  async function initilisasi(){
+    statusTimerCooking=false;
+    clearInterval(timerCooking);
+    return await link.restoreSession(identifier);
+  }
+
   async function getCooking(){
+      session = await initilisasi();
+      statusTimerCooking=true;
+
       foodSlot = [];
       toolsSlot = [];
-      session = await link.restoreSession(identifier);
 
       var hasil = await link.client.v1.chain.get_table_rows({
         code: "fajarmuhf123",
@@ -1003,14 +1016,18 @@ function App() {
 
       var kNama = [];
       var kButton = [];
+      var kTimer = [];
       for(var i=0;i<hasil["rows"][0]["slot_cooking"];i++){
         var keku = "kNama"+i;
         var CuisineFood = "";
-        kNama.push(<td key={keku}><div style={{paddingTop: '3px',backgroundImage: `url(${slot})`,backgroundPosition: 'center',backgroundSize: 'cover',backgroundRepeat: 'no-repeat',width: '120px',height:'120px'}}>{CuisineFood}</div></td>);  
+        kNama.push(<td key={keku}><div style={{paddingTop: '3px',backgroundImage: `url(${slot})`,backgroundPosition: 'center',backgroundSize: 'cover',backgroundRepeat: 'no-repeat',width: '120px',height:'140px'}}>{CuisineFood}</div></td>);  
 
         var keku = "kButton"+i;
         const id_slot = i+1;
-        kButton.push(<td key={keku} onClick={() => {getCookingSlot(id_slot)}}><button>Add</button></td>);
+        kButton.push(<td key={keku}>loading..</td>);
+      
+        var keku = "kTimer"+i;
+        kTimer.push(<td key={keku}></td>);
       }
 
       for(var i=0;i<hasil["rows"][0]["slot_cooking"];i++){
@@ -1032,23 +1049,33 @@ function App() {
               upper_bound: cuisine_id
             });
 
-            const template_id = hasilku["rows"][j]["template_id"];
+            const template_id = hasilku["rows"][0]["template_id"];
+            const cookingClaim = (hasil2["rows"][j]["cooking_claim"]);
+            const maxCooking = (hasilku["rows"][0]["max_cooking"]);
+            const nextAvailability = (hasil2["rows"][j]["next_availability"]);
 
             var hasils = await fetch(
               "https://test.wax.api.atomicassets.io/atomicassets/v1/templates?collection_name=fajarmuhf123&schema_name=cuisine&limit=1000&lower_bound="+template_id+"&upper_bound="+(template_id+1))
             .then((res) => res.json())
             .then((json) => {
               const keku = "kNama"+i;
+              const kekuNama = "cuisineNama"+i;
+              const gambarNama = "cuisineGambar"+i;
               const namaCuisine = (json["data"][0]["name"]);
               const gambarCuisine = 'https://ipfs.io/ipfs/'+(json["data"][0]["immutable_data"]["img"]);
 
-              const CuisineFood = <img src={gambarCuisine} style={{width: '120px',height:'120px'}}/>;
+              const CuisineFood = <ul style={{listStyleType: 'none',padding: 0,margin: 0}}>
+                <li key={kekuNama} style={{color:'white'}}>{namaCuisine}</li>
+                <li key={gambarNama}><img src={gambarCuisine} style={{width: '120px',height:'120px'}}/></li>
+              </ul>;
 
-              kNama[i] = (<td key={keku}><div style={{paddingTop: '3px',backgroundImage: `url(${slot})`,backgroundPosition: 'center',backgroundSize: 'cover',backgroundRepeat: 'no-repeat',width: '120px',height:'120px'}}>{CuisineFood}</div></td>);
+              kNama[i] = (<td key={keku}><div style={{paddingTop: '3px',backgroundImage: `url(${slot})`,backgroundPosition: 'center',backgroundSize: 'cover',backgroundRepeat: 'no-repeat',width: '120px',height:'140px'}}>{CuisineFood}</div></td>);
               const keku2 = "kButton"+i;
               const id_slot = i+1;
-              kButton[i] = (<td key={keku2} onClick={() => {getCookingSlot(id_slot)}}><button>Add</button></td>);
+              kButton[i] = (<td key={keku2}>loading..</td>);
 
+              const keku3 = "kTimer"+i;
+              kTimer[i] = (<td key={keku3}> </td>);
             });
           }
         }
@@ -1061,6 +1088,9 @@ function App() {
                         </tr>
                       </thead>
                       <tbody>
+                        <tr key="timerNft">
+                          {kTimer}
+                        </tr>  
                         <tr key="slotNft">
                           {kButton}
                         </tr>  
@@ -1069,6 +1099,117 @@ function App() {
       setPacksL(imgPacksL);
       setStatusContent("Cooking");
       setJudul(<h2>Cooking</h2>);
+      const timersku = setInterval(async () => {
+        if(timersku !== false){
+          for(var i=0;i<hasil["rows"][0]["slot_cooking"];i++){
+            var found = false;
+            for(var j=0;j<hasil2["rows"].length;j++){
+              if(hasil2["rows"][j]["slot_id"]==(i+1)){
+                found = true;
+                const cuisine_id = (hasil2["rows"][j]["cuisine_id"]);
+
+                var hasilku = await link.client.v1.chain.get_table_rows({
+                  code: "fajarmuhf123",
+                  index_position: 1,
+                  json: true,
+                  key_type: "int",
+                  limit: "100",
+                  lower_bound: cuisine_id,
+                  reverse: false,
+                  scope: "fajarmuhf123",
+                  show_payer: false,
+                  table: "cuisine",
+                  upper_bound: cuisine_id
+                });
+
+                if(timersku !== false){
+
+                  const cookingClaim = (hasil2["rows"][j]["cooking_claim"]);
+                  const maxCooking = (hasilku["rows"][0]["max_cooking"]);
+                  const nextAvailability = (hasil2["rows"][j]["next_availability"]);
+                  const timeCount = nextAvailability-Math.round(new Date().getTime()/1000);
+                  
+                  const tampilkan = function (timeleft){
+                    const timeString = timeleft;
+                    const keku3 = "kTimer"+i;
+                    kTimer[i] = (<td key={keku3}>({cookingClaim}/{maxCooking}) {timeString}</td>);
+                    const keku2 = "kButton"+i;
+                    const id_slot = i+1;
+                    if(timeleft=="ready"){
+                      kButton[i] = (<td key={keku2} onClick={() => {claimCook(id_slot)}}><button>Cook</button></td>);
+                    }
+                    else{
+                      kButton[i] = (<td key={keku2}> cooking.. </td>);  
+                    }
+                    if(statusTimerCooking){
+                      imgPacksL = <table align='center' style={{marginTop: '20px'}} >
+                                      <thead>
+                                        <tr key="nameNft">
+                                          {kNama}
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr key="timerNft">
+                                          {kTimer}
+                                        </tr>  
+                                        <tr key="slotNft">
+                                          {kButton}
+                                        </tr>  
+                                      </tbody>
+                                      </table>;
+                      setPacksL(imgPacksL);
+                    }
+                  };
+                  if(timeCount <= 0){
+                    tampilkan("ready");
+                  }
+                  else{
+                    var days = Math.floor(timeCount / (60 * 60 * 24));
+                    var hours = Math.floor((timeCount % (60 * 60 * 24)) / (60 * 60));
+                    hours = ("0" + hours).slice(-2);
+                    var minutes = Math.floor((timeCount % (60 * 60)) / (60));
+                    minutes = ("0" + minutes).slice(-2);
+                    var seconds = Math.floor((timeCount % (60)) );
+                    seconds = ("0" + seconds).slice(-2);
+                    var timeString = days+" "+hours+":"+minutes+":"+seconds;
+                    tampilkan(timeString);
+                  }
+                }
+
+              }
+            }
+            if(found == false){
+              const keku2 = "kButton"+i;
+              const id_slot = i+1;
+              kButton[i] = (<td key={keku2} onClick={() => {statusTimerCooking=false;clearInterval(timersku);getCookingSlot(id_slot)}}><button>Add</button></td>);
+
+              if(statusTimerCooking){
+                imgPacksL = <table align='center' style={{marginTop: '20px'}} >
+                              <thead>
+                                <tr key="nameNft">
+                                  {kNama}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr key="timerNft">
+                                  {kTimer}
+                                </tr>  
+                                <tr key="slotNft">
+                                  {kButton}
+                                </tr>  
+                              </tbody>
+                              </table>;
+                setPacksL(imgPacksL);
+              }
+            }
+          }
+        }
+
+      },1000);
+
+      setTimerCooking(timersku);
+
+      
   }
 
   async function updateInputValue(koin,evt,nameContent,gambarContent,buttonContent,fee){
@@ -1300,7 +1441,8 @@ function App() {
   }
 
   async function getWithdraw(){
-    session = await link.restoreSession(identifier);
+    session = await initilisasi();
+
     var userStr = String(session.auth.actor);
     var hasil = await link.client.v1.chain.get_table_rows({
         code: "fajarmuhf123",
@@ -1399,7 +1541,8 @@ function App() {
   }
 
   async function getDeposit(){
-    session = await link.restoreSession(identifier);
+    session = await initilisasi();
+
     var userStr = String(session.auth.actor);
     var hasil = await link.client.v1.chain.get_table_rows({
         code: "fajarmftoken",
@@ -1583,7 +1726,7 @@ function App() {
     });
   }
   async function logout(){
-    session = await link.restoreSession(identifier);
+    session = await initilisasi();
     try{
       session.remove();
       setUserAccount('No wallet linked');
@@ -1592,6 +1735,7 @@ function App() {
       setPacksL('');
       setStatusContent('');
       setJudul('');
+      setPropsAccount('');
     }catch(err){
 
       console.log(err);
