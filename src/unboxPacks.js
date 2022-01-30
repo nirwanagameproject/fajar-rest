@@ -18,7 +18,7 @@ async function unboxPacks(assetId,setPacksL,setStatusContent,setJudul,timerCooki
   //getNftUnclaimPack();
   await global.config.session.transact({action})
   .then(function(response){
-    if(response.processed.receipt.status=="executed"){
+    if(response.processed.receipt.status==="executed"){
       onShowAlert("success","Pack successfully unbox.Transaction at "+response.processed.id,"Pack Unboxed",() => {getNftUnclaimPack(setPacksL,setStatusContent,setJudul,timerCooking,setAlert);onCloseAlert(setAlert)},setAlert);
     }
   })

@@ -8,7 +8,6 @@ import Alert from 'react-popup-alert'
 
 /* Initialization and Settup Global Variabel */
 import './Init.js'
-import initilisasi from './initilisasi.js'
 
 /* action Button */
 import login from './login.js'
@@ -16,12 +15,7 @@ import logout from './logout.js'
 import restoresession from './restoresession.js'
 
 /* Update variabel of Content */
-import updateBalance from './updateBalance.js'
 import updateMenu from './updateMenu.js'
-
-/* Modal Pop Up Library */
-import onShowAlert from './onShowAlert.js'
-import onCloseAlert from './onCloseAlert.js'
 
 /* Show data table */
 import getNftPack from './getNftPack.js'
@@ -48,9 +42,11 @@ function App() {
   const [statusContent,setStatusContent] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
   const [alert, setAlert] = useState({ type: 'error', text: 'This is a alert message',show: false});
-  const transport = new AnchorLinkBrowserTransport();
+  
 
   useEffect(() => {
+    const transport = new AnchorLinkBrowserTransport();
+
     global.config.link = new AnchorLink({
       transport,
       chains: [{
@@ -106,16 +102,16 @@ function App() {
       }
       {judul}
       {
-        (statusContent == "Cooking") ? (<button onClick={() => {getRecipes(setPacksL,setStatusContent,setJudul,timerCooking,setAlert)}}>Recipes</button>)
-        : (statusContent == "Recipes") && (<button onClick={() => {getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking)}}>Cooking</button>)
+        (statusContent === "Cooking") ? (<button onClick={() => {getRecipes(setPacksL,setStatusContent,setJudul,timerCooking,setAlert)}}>Recipes</button>)
+        : (statusContent === "Recipes") && (<button onClick={() => {getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking)}}>Cooking</button>)
       }
       {
-        (statusContent == "Packs") ? (<button onClick={()=>{getNftUnclaimPack(setPacksL,setStatusContent,setJudul,timerCooking,setAlert)}}>Unclaim Packs</button>)
-        : (statusContent == "UnclaimPacks") && (<button onClick={()=>{getNftPack(setPacksL,setStatusContent,setJudul,timerCooking,setAlert)}}>My Packs</button>)
+        (statusContent === "Packs") ? (<button onClick={()=>{getNftUnclaimPack(setPacksL,setStatusContent,setJudul,timerCooking,setAlert)}}>Unclaim Packs</button>)
+        : (statusContent === "UnclaimPacks") && (<button onClick={()=>{getNftPack(setPacksL,setStatusContent,setJudul,timerCooking,setAlert)}}>My Packs</button>)
       }
       {
-        (statusContent == "WalletDeposit") ? (<button onClick={() => {getWithdraw(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)}}>Withdraw</button>)
-        : (statusContent == "WalletWithdraw") && (<button onClick={() => {getDeposit(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)}}>Deposit</button>)
+        (statusContent === "WalletDeposit") ? (<button onClick={() => {getWithdraw(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)}}>Withdraw</button>)
+        : (statusContent === "WalletWithdraw") && (<button onClick={() => {getDeposit(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)}}>Deposit</button>)
       }
       <div id='balance'>Hello {userAccount} {balanceAccount}</div>
       <div id='props'>{propsAccount}</div>

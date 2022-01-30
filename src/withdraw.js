@@ -3,7 +3,7 @@ import onCloseAlert from './onCloseAlert.js'
 import updateBalance from './updateBalance.js'
 
 async function withdraw(koin,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount){
-  if(koin=="FRCOIN"){
+  if(koin+""==="FRCOIN"){
     if (!isNaN(global.config.frcoin) && !isNaN(parseFloat(global.config.frcoin)))
     { 
       const action = {
@@ -17,9 +17,9 @@ async function withdraw(koin,setPacksL,setStatusContent,setJudul,timerCooking,se
           memo: "withdraw"
         }
       }
-      const response = await global.config.session.transact({action})
+      await global.config.session.transact({action})
       .then(function(response){
-        if(response.processed.receipt.status=="executed"){
+        if(response.processed.receipt.status+""==="executed"){
           onShowAlert("success","Deposit successfully.Transaction at "+response.processed.id,"Deposit success",() => {updateBalance(String(global.config.session.auth.actor),setBalanceAccount,setPropsAccount);onCloseAlert(setAlert)},setAlert);
         }
       })
@@ -32,7 +32,7 @@ async function withdraw(koin,setPacksL,setStatusContent,setJudul,timerCooking,se
       onShowAlert("error","Wrong Input Number.","Wrong Number",() => {onCloseAlert(setAlert)},setAlert);
     }
   }
-  else if(koin=="FRGAS"){
+  else if(koin+""==="FRGAS"){
     if (!isNaN(global.config.frgas) && !isNaN(parseFloat(global.config.frgas)))
     { 
       const action = {
@@ -46,9 +46,9 @@ async function withdraw(koin,setPacksL,setStatusContent,setJudul,timerCooking,se
           memo: "withdraw"
         }
       }
-      const response = await global.config.session.transact({action})
+      await global.config.session.transact({action})
       .then(function(response){
-        if(response.processed.receipt.status=="executed"){
+        if(response.processed.receipt.status+""==="executed"){
           onShowAlert("success","Deposit successfully.Transaction at "+response.processed.id,"Deposit success",() => {updateBalance(String(global.config.session.auth.actor),setBalanceAccount,setPropsAccount);onCloseAlert(setAlert)},setAlert);
         }
       })
@@ -62,7 +62,7 @@ async function withdraw(koin,setPacksL,setStatusContent,setJudul,timerCooking,se
       onShowAlert("error","Wrong Input Number.","Wrong Number",() => {onCloseAlert(setAlert)},setAlert);
     }
   }
-  else if(koin=="FRENERGY"){
+  else if(koin+""==="FRENERGY"){
     if (!isNaN(global.config.frenergy) && !isNaN(parseFloat(global.config.frenergy)))
     { 
       const action = {
@@ -76,9 +76,9 @@ async function withdraw(koin,setPacksL,setStatusContent,setJudul,timerCooking,se
           memo: "withdraw"
         }
       }
-      const response = await global.config.session.transact({action})
+      await global.config.session.transact({action})
       .then(function(response){
-        if(response.processed.receipt.status=="executed"){
+        if(response.processed.receipt.status+""==="executed"){
           onShowAlert("success","Deposit successfully.Transaction at "+response.processed.id,"Deposit success",() => {updateBalance(String(global.config.session.auth.actor),setBalanceAccount,setPropsAccount);onCloseAlert(setAlert)},setAlert);
         }
       })

@@ -1,6 +1,6 @@
 import initilisasi from './initilisasi.js'
 import withdraw from './withdraw.js'
-import React, { Component } from 'react'
+import React from 'react'
 import updateInputValue from './updateInputValue.js'
 
 async function getWithdraw(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount){
@@ -28,13 +28,13 @@ async function getWithdraw(setPacksL,setStatusContent,setJudul,timerCooking,setA
   var frgas2 = "0.0000";
   var frenergy2 = "0.0000";
   for(var i=0;i<hasil["rows"].length;i++){
-    if(hasil["rows"][i]["balance"][0].split(" ")[1]=="FRCOIN"){
+    if(hasil["rows"][i]["balance"][0].split(" ")[1]==="FRCOIN"){
       frcoin2=hasil["rows"][i]["balance"][0].split(" ")[0];
     }
-    if(hasil["rows"][i]["balance"][0].split(" ")[1]=="FRGAS"){
+    if(hasil["rows"][i]["balance"][0].split(" ")[1]==="FRGAS"){
       frgas2=hasil["rows"][i]["balance"][0].split(" ")[0];
     }
-    if(hasil["rows"][i]["balance"][0].split(" ")[1]=="FRENERG"){
+    if(hasil["rows"][i]["balance"][0].split(" ")[1]==="FRENERG"){
       frenergy2=hasil["rows"][i]["balance"][0].split(" ")[0];
     }    
   }

@@ -1,6 +1,6 @@
 import initilisasi from './initilisasi.js'
 import deposit from './deposit.js'
-import React, { Component } from 'react'
+import React from 'react'
 import updateInputValue from './updateInputValue.js'
 
 async function getDeposit(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount){
@@ -28,13 +28,13 @@ async function getDeposit(setPacksL,setStatusContent,setJudul,timerCooking,setAl
   var frgas = "0.0000";
   var frenergy = "0.0000";
   for(var i=0;i<hasil["rows"].length;i++){
-    if(hasil["rows"][i]["balance"].split(" ")[1]=="FRCOIN"){
+    if(hasil["rows"][i]["balance"].split(" ")[1]==="FRCOIN"){
       frcoin=hasil["rows"][i]["balance"].split(" ")[0];
     }
-    if(hasil["rows"][i]["balance"].split(" ")[1]=="FRGAS"){
+    if(hasil["rows"][i]["balance"].split(" ")[1]==="FRGAS"){
       frgas=hasil["rows"][i]["balance"].split(" ")[0];
     }
-    if(hasil["rows"][i]["balance"].split(" ")[1]=="FRENERG"){
+    if(hasil["rows"][i]["balance"].split(" ")[1]==="FRENERG"){
       frenergy=hasil["rows"][i]["balance"].split(" ")[0];
     }    
   }

@@ -1,6 +1,6 @@
 import initilisasi from './initilisasi.js'
 import buyPacks from './buyPacks.js'
-import React, { Component } from 'react'
+import React from 'react'
 
 async function getPacks(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount){
   global.config.session = await initilisasi(timerCooking);
@@ -30,22 +30,6 @@ async function getPacks(setPacksL,setStatusContent,setJudul,timerCooking,setAler
       let gambarContent=[];
       let buttonContent=[];
 
-      let idPackArr = [];
-      let pricePackArr = [];
-
-      var store = (function() {
-          var map = {};
-
-          return {
-              set: function ( name, value ) {
-                  map[ name ] = value;
-              },
-              get: function ( name ) {
-                  return map[ name ];
-              }
-          };
-      })();
-
       for(var i=0;i<json["data"].length;i++){
         var descPacks = (json["data"][i]["immutable_data"]["description"]);
         var namePacks = (json["data"][i]["name"]);
@@ -53,22 +37,22 @@ async function getPacks(setPacksL,setStatusContent,setJudul,timerCooking,setAler
         var gambarPacks = 'https://ipfs.io/ipfs/'+(json["data"][i]["immutable_data"]["img"]);
 
         for(var j=0;j<hasil["rows"].length;j++){
-          if(idPacks == hasil["rows"][j]["template_id"]){
+          if(idPacks+"" === ""+hasil["rows"][j]["template_id"]){
             let nameNow = "nameNft"+i;
             let imgNftNow = "imageNft"+i;
-            let rarityNow = "rarityNft"+i;
             let priceNow = "priceNft"+i;
             let gambarNow = "gambarNft"+i;
             let buttonNow = "buttonNft"+i;
 
             const idPacks = hasil["rows"][j]["template_id"];
+
             
             const pricePacks = hasil["rows"][j]["price"];
             const fungsi = () => {buyPacks(idPacks,(global.config.session.auth.actor),pricePacks,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)};
             nameContent.push(<td key={nameNow}>{namePacks}</td>);
             descContent.push(<td key={imgNftNow}>{descPacks}</td>);
             priceContent.push(<td key={priceNow}>{pricePacks}</td>);
-            gambarContent.push(<td key={gambarNow}><img src={gambarPacks} style={{width: '120px',height:'120px'}}></img></td>);
+            gambarContent.push(<td key={gambarNow}><img src={gambarPacks} style={{width: '120px',height:'120px'}} alt={gambarNow}></img></td>);
             buttonContent.push(<td key={buttonNow}><button onClick={fungsi}>Buy Now</button></td>);
           }
         }

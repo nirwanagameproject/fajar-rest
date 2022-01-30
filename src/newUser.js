@@ -16,7 +16,7 @@ async function newUser(sesi,setPacksL,setStatusContent,setJudul,timerCooking,set
       upper_bound: userKu
     });
 
-  if(hasil["rows"].length == 0){
+  if(hasil["rows"].length === 0){
     const action = {
         account: 'fajarmuhf123',
         name: 'newuser',
@@ -25,7 +25,7 @@ async function newUser(sesi,setPacksL,setStatusContent,setJudul,timerCooking,set
           nama: (userKu)
         }
     }
-    const response = await sesi.transact({action})
+    await sesi.transact({action})
     .then(function(response){
         global.config.session = sesi;
         restoresession(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setUserAccount,loadSession,setLoadSession);

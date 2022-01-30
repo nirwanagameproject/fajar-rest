@@ -28,9 +28,9 @@ async function claimPacks(assetId,setPacksL,setStatusContent,setJudul,timerCooki
         pack_asset_id : assetId
       }
   }
-  const response = await global.config.session.transact({action})
+  await global.config.session.transact({action})
   .then(function(response){
-    if(response.processed.receipt.status=="executed"){
+    if(response.processed.receipt.status==="executed"){
       onShowAlert("success","Pack successfully claimed.Transaction at "+response.processed.id,"Pack Claimed",() => {getClaimedNft(response.processed.id,setPacksL,setStatusContent,setJudul,timerCooking,setAlert);onCloseAlert(setAlert)},setAlert);
     }
   })

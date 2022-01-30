@@ -34,16 +34,16 @@ async function cookNow(id_slot,setPacksL,setStatusContent,setJudul,timerCooking,
         memo : "cooking "+id_slot+" "+req_food_temp_id+" "+req_food_asset_id+" "+req_tools_temp_id+" "+req_tools_asset_id
       }
   }
-    const response = await global.config.session.transact({action})
-    .then(function(response){
-      if(response.processed.receipt.status=="executed"){
-        onShowAlert("success","Cooking successfully.Transaction at "+response.processed.id,"Cooking Success",() => {getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking);updateBalance(String(global.config.session.auth.actor),setBalanceAccount,setPropsAccount);onCloseAlert(setAlert)},setAlert);
-      }
-    })
-    .catch(function (e) {
-      console.log(e);
-      onShowAlert("error","Cooking failed."+e,"Fail Cooking",() => {onCloseAlert(setAlert)},setAlert);
-    })
+  await global.config.session.transact({action})
+  .then(function(response){
+    if(response.processed.receipt.status==="executed"){
+      onShowAlert("success","Cooking successfully.Transaction at "+response.processed.id,"Cooking Success",() => {getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking);updateBalance(String(global.config.session.auth.actor),setBalanceAccount,setPropsAccount);onCloseAlert(setAlert)},setAlert);
+    }
+  })
+  .catch(function (e) {
+    console.log(e);
+    onShowAlert("error","Cooking failed."+e,"Fail Cooking",() => {onCloseAlert(setAlert)},setAlert);
+  })
 }
 
 export default cookNow;

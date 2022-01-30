@@ -1,5 +1,5 @@
 function updateMenu() {
-  if (document.getElementById('responsive-menu').checked == true) {
+  if (document.getElementById('responsive-menu').checked) {
     document.getElementById('menu').style.borderBottomRightRadius = '0';
     document.getElementById('menu').style.borderBottomLeftRadius = '0';
   }else{

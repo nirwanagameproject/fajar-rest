@@ -16,7 +16,7 @@ async function buyPacks(tempId,userKu,pricePacks,setPacksL,setStatusContent,setJ
   }
   await global.config.session.transact({action})
   .then(function(response){
-    if(response.processed.receipt.status=="executed"){
+    if(response.processed.receipt.status==="executed"){
       onShowAlert("success","Pack successfully purchased.Transaction at "+response.processed.id,"Pack Bought",() => {getNftPack(setPacksL,setStatusContent,setJudul,timerCooking,setAlert);updateBalance(userKu,setBalanceAccount,setPropsAccount);onCloseAlert(setAlert)},setAlert);
     }
   })

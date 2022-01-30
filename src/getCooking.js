@@ -4,6 +4,7 @@ import getCookingSlot from './getCookingSlot.js'
 import claimCook from './claimCook.js'
 import slot from './img/slot.png'
 
+
 async function getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking){
   global.config.session = await initilisasi(timerCooking);
   global.config.statusTimerCooking=true;
@@ -48,17 +49,16 @@ async function getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAl
     var CuisineFood = "";
     kNama.push(<td key={keku}><div style={{paddingTop: '3px',backgroundImage: `url(${slot})`,backgroundPosition: 'center',backgroundSize: 'cover',backgroundRepeat: 'no-repeat',width: '120px',height:'140px'}}>{CuisineFood}</div></td>);  
 
-    var keku = "kButton"+i;
-    const id_slot = i+1;
+    keku = "kButton"+i;
     kButton.push(<td key={keku}>loading..</td>);
   
-    var keku = "kTimer"+i;
+    keku = "kTimer"+i;
     kTimer.push(<td key={keku}></td>);
   }
 
-  for(var i=0;i<hasil["rows"][0]["slot_cooking"];i++){
+  for(i=0;i<hasil["rows"][0]["slot_cooking"];i++){
     for(var j=0;j<hasil2["rows"].length;j++){
-      if(hasil2["rows"][j]["slot_id"]==(i+1)){
+      if(hasil2["rows"][j]["slot_id"]+""===(i+1)+""){
         const cuisine_id = (hasil2["rows"][j]["cuisine_id"]);
 
         var hasilku = await global.config.link.client.v1.chain.get_table_rows({
@@ -76,33 +76,27 @@ async function getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAl
         });
 
         const template_id = hasilku["rows"][0]["template_id"];
-        const cookingClaim = (hasil2["rows"][j]["cooking_claim"]);
-        const maxCooking = (hasilku["rows"][0]["max_cooking"]);
-        const nextAvailability = (hasil2["rows"][j]["next_availability"]);
 
-        var hasils = await fetch(
-          "https://test.wax.api.atomicassets.io/atomicassets/v1/templates?collection_name=fajarmuhf123&schema_name=cuisine&limit=1000&lower_bound="+template_id+"&upper_bound="+(template_id+1))
-        .then((res) => res.json())
-        .then((json) => {
-          const keku = "kNama"+i;
-          const kekuNama = "cuisineNama"+i;
-          const gambarNama = "cuisineGambar"+i;
-          const namaCuisine = (json["data"][0]["name"]);
-          const gambarCuisine = 'https://ipfs.io/ipfs/'+(json["data"][0]["immutable_data"]["img"]);
+        const request = await fetch("https://test.wax.api.atomicassets.io/atomicassets/v1/templates?collection_name=fajarmuhf123&schema_name=cuisine&limit=1000&lower_bound="+template_id+"&upper_bound="+(template_id+1));
+        const json = await request.json();
 
-          const CuisineFood = <ul style={{listStyleType: 'none',padding: 0,margin: 0}}>
-            <li key={kekuNama} style={{color:'white'}}>{namaCuisine}</li>
-            <li key={gambarNama}><img src={gambarCuisine} style={{width: '120px',height:'120px'}}/></li>
-          </ul>;
+        const keku = "kNama"+i;
+        const kekuNama = "cuisineNama"+i;
+        const gambarNama = "cuisineGambar"+i;
+        const namaCuisine = (json["data"][0]["name"]);
+        const gambarCuisine = 'https://ipfs.io/ipfs/'+(json["data"][0]["immutable_data"]["img"]);
 
-          kNama[i] = (<td key={keku}><div style={{paddingTop: '3px',backgroundImage: `url(${slot})`,backgroundPosition: 'center',backgroundSize: 'cover',backgroundRepeat: 'no-repeat',width: '120px',height:'140px'}}>{CuisineFood}</div></td>);
-          const keku2 = "kButton"+i;
-          const id_slot = i+1;
-          kButton[i] = (<td key={keku2}>loading..</td>);
+        const CuisineFood = <ul style={{listStyleType: 'none',padding: 0,margin: 0}}>
+          <li key={kekuNama} style={{color:'white'}}>{namaCuisine}</li>
+          <li key={gambarNama}><img src={gambarCuisine} style={{width: '120px',height:'120px'}} alt={gambarNama}/></li>
+        </ul>;
 
-          const keku3 = "kTimer"+i;
-          kTimer[i] = (<td key={keku3}> </td>);
-        });
+        kNama[i] = (<td key={keku}><div style={{paddingTop: '3px',backgroundImage: `url(${slot})`,backgroundPosition: 'center',backgroundSize: 'cover',backgroundRepeat: 'no-repeat',width: '120px',height:'140px'}}>{CuisineFood}</div></td>);
+        const keku2 = "kButton"+i;
+        kButton[i] = (<td key={keku2}>loading..</td>);
+
+        const keku3 = "kTimer"+i;
+        kTimer[i] = (<td key={keku3}> </td>);
       }
     }
   }
@@ -130,7 +124,7 @@ async function getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAl
       for(var i=0;i<hasil["rows"][0]["slot_cooking"];i++){
         var found = false;
         for(var j=0;j<hasil2["rows"].length;j++){
-          if(hasil2["rows"][j]["slot_id"]==(i+1)){
+          if(hasil2["rows"][j]["slot_id"]+""===(i+1)+""){
             found = true;
             const cuisine_id = (hasil2["rows"][j]["cuisine_id"]);
 
@@ -155,39 +149,8 @@ async function getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAl
               const nextAvailability = (hasil2["rows"][j]["next_availability"]);
               const timeCount = nextAvailability-Math.round(new Date().getTime()/1000);
               
-              const tampilkan = function (timeleft){
-                const timeString = timeleft;
-                const keku3 = "kTimer"+i;
-                kTimer[i] = (<td key={keku3}>({cookingClaim}/{maxCooking}) {timeString}</td>);
-                const keku2 = "kButton"+i;
-                const id_slot = i+1;
-                if(timeleft=="ready"){
-                  kButton[i] = (<td key={keku2} onClick={() => {claimCook(id_slot)}}><button>Cook</button></td>);
-                }
-                else{
-                  kButton[i] = (<td key={keku2}> cooking.. </td>);  
-                }
-                if(global.config.statusTimerCooking){
-                  global.config.imgPacksL = <table align='center' style={{marginTop: '20px'}} >
-                                  <thead>
-                                    <tr key="nameNft">
-                                      {kNama}
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    <tr key="timerNft">
-                                      {kTimer}
-                                    </tr>  
-                                    <tr key="slotNft">
-                                      {kButton}
-                                    </tr>  
-                                  </tbody>
-                                  </table>;
-                  setPacksL(global.config.imgPacksL);
-                }
-              };
               if(timeCount <= 0){
-                tampilkan("ready");
+                tampilkan("ready",i,kTimer,cookingClaim,maxCooking,kButton,kNama,setPacksL);
               }
               else{
                 var days = Math.floor(timeCount / (60 * 60 * 24));
@@ -198,13 +161,13 @@ async function getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAl
                 var seconds = Math.floor((timeCount % (60)) );
                 seconds = ("0" + seconds).slice(-2);
                 var timeString = days+" "+hours+":"+minutes+":"+seconds;
-                tampilkan(timeString);
+                tampilkan(timeString,i,kTimer,cookingClaim,maxCooking,kButton,kNama,setPacksL);
               }
             }
 
           }
         }
-        if(found == false){
+        if(!found){
           const keku2 = "kButton"+i;
           const id_slot = i+1;
           kButton[i] = (<td key={keku2} onClick={() => {global.config.statusTimerCooking=false;clearInterval(timersku);getCookingSlot(id_slot,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)}}><button>Add</button></td>);
@@ -236,5 +199,38 @@ async function getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAl
   setTimerCooking(timersku);
  
 }
+
+function tampilkan(timeleft,i,kTimer,cookingClaim,maxCooking,kButton,kNama,setPacksL) {
+  const timeString = timeleft;
+  const keku3 = "kTimer"+i;
+  kTimer[i] = (<td key={keku3}>({cookingClaim}/{maxCooking}) {timeString}</td>);
+  const keku2 = "kButton"+i;
+  const id_slot = i+1;
+  if(timeleft+""==="ready"){
+    kButton[i] = (<td key={keku2} onClick={() => {claimCook(id_slot)}}><button>Cook</button></td>);
+  }
+  else{
+    kButton[i] = (<td key={keku2}> cooking.. </td>);  
+  }
+  if(global.config.statusTimerCooking){
+    global.config.imgPacksL = <table align='center' style={{marginTop: '20px'}} >
+                    <thead>
+                      <tr key="nameNft">
+                        {kNama}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr key="timerNft">
+                        {kTimer}
+                      </tr>  
+                      <tr key="slotNft">
+                        {kButton}
+                      </tr>  
+                    </tbody>
+                    </table>;
+    setPacksL(global.config.imgPacksL);
+  }
+}
+
 
 export default getCooking;

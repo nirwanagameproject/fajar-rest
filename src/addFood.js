@@ -4,12 +4,12 @@ import getAddRaw from './getAddRaw.js'
 
 async function addFood(asset_id,template_id,name_food,id_slot,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking){
   for(var mo=0;mo<global.config.foodSlot.length;mo++){
-    if(global.config.foodSlot[mo]["asset_id"] == asset_id){
+    if(global.config.foodSlot[mo]["asset_id"]+"" === asset_id+""){
         global.config.foodSlot.splice(mo, 1);
         getAddRaw(id_slot,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking);
         return;        
     }
-    if(global.config.foodSlot[mo]["template_id"] == template_id){
+    if(global.config.foodSlot[mo]["template_id"]+"" === template_id+""){
       onShowAlert("error","Same raw material","Fail Add Raw",() => onCloseAlert(setAlert),setAlert);
       return;
     }

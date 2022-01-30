@@ -25,13 +25,13 @@ async function updateBalance(userStr,setBalanceAccount,setPropsAccount){
     energy=hasil["rows"][i]["energy"];
     max_energy=hasil["rows"][i]["max_energy"];
 
-    if(hasil["rows"][i]["balance"][0].split(" ")[1]=="FRCOIN"){
+    if(hasil["rows"][i]["balance"][0].split(" ")[1]==="FRCOIN"){
       frcoin=hasil["rows"][i]["balance"][0].split(" ")[0];
     }
-    if(hasil["rows"][i]["balance"][0].split(" ")[1]=="FRGAS"){
+    if(hasil["rows"][i]["balance"][0].split(" ")[1]==="FRGAS"){
       frgas=hasil["rows"][i]["balance"][0].split(" ")[0];
     }
-    if(hasil["rows"][i]["balance"][0].split(" ")[1]=="FRENERG"){
+    if(hasil["rows"][i]["balance"][0].split(" ")[1]==="FRENERG"){
       frenergy=hasil["rows"][i]["balance"][0].split(" ")[0];
     }    
   }

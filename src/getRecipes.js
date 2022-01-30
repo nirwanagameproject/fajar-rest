@@ -38,12 +38,12 @@ async function getRecipes(setPacksL,setStatusContent,setJudul,timerCooking,setAl
     const charge_time_req = hasil["rows"][i]["charge_time"];
     const max_cooking_req = hasil["rows"][i]["max_cooking"];
     var gas_req = 0;
-    fetch(
-    "https://test.wax.api.atomicassets.io/atomicassets/v1/templates?collection_name=fajarmuhf123&schema_name=cuisine&limit=100"
-    ).then((res) => res.json())
-    .then((json) => {
-      for(var j=0;j<json["data"].length;j++){
-        if(json["data"][j]["template_id"]==temp_id){
+
+    const get_hasil = await fetch("https://test.wax.api.atomicassets.io/atomicassets/v1/templates?collection_name=fajarmuhf123&schema_name=cuisine&limit=100");
+    const json = await get_hasil.json();
+
+    for(var j=0;j<json["data"].length;j++){
+        if(""+json["data"][j]["template_id"]===""+temp_id){
           const name_cuisine = json["data"][j]["name"];
           const energy_cuisine = json["data"][j]["immutable_data"]["energy"];
           const karbohidrat_cuisine = json["data"][j]["immutable_data"]["karbohidrat"];
@@ -57,6 +57,7 @@ async function getRecipes(setPacksL,setStatusContent,setJudul,timerCooking,setAl
           const karboK = "karboK"+i;
           const proteinK = "proteinK"+i;
           const lemakK = "lemakK"+i;
+          const FoodK = "LiFood"+i;
 
           const nutrition_list = [];
           nutrition_list.push(<li key={energyK}>energy : {energy_cuisine}</li>);
@@ -67,15 +68,14 @@ async function getRecipes(setPacksL,setStatusContent,setJudul,timerCooking,setAl
           kNutrition.push(<td key={cNutrition}><p>nutrition</p><ul>{nutrition_list}</ul></td>);
 
           const gambar_cuisine = 'https://ipfs.io/ipfs/'+json["data"][j]["immutable_data"]["img"];
-          kGambar.push(<td key={cGambar}><img src={gambar_cuisine} style={{width: '120px',height:'120px'}} /></td>);               
+          kGambar.push(<td key={cGambar}><img src={gambar_cuisine} style={{width: '120px',height:'120px'}} alt={FoodK} /></td>);               
 
-          fetch(
-          "https://test.wax.api.atomicassets.io/atomicassets/v1/templates?collection_name=fajarmuhf123&schema_name=food&limit=100"
-          ).then((res2) => res2.json())
-          .then((json2) => {
-            for(var k=0;k<json2["data"].length;k++){
+          const get_hasil_template = await fetch("https://test.wax.api.atomicassets.io/atomicassets/v1/templates?collection_name=fajarmuhf123&schema_name=food&limit=100");
+          const json2 = await get_hasil_template.json();
+
+          for(var k=0;k<json2["data"].length;k++){
               for(var l=0;l<food_req.length;l++){
-                if(json2["data"][k]["template_id"] == food_req[l]){
+                if(""+json2["data"][k]["template_id"] === ""+food_req[l]){
                   const liFood = "LiFood"+l;
                   const name_food = json2["data"][k]["name"];
                   const gambar_food = 'https://ipfs.io/ipfs/'+json2["data"][k]["immutable_data"]["img"];
@@ -90,19 +90,19 @@ async function getRecipes(setPacksL,setStatusContent,setJudul,timerCooking,setAl
                       </thead>
                       <tbody>
                       <tr>
-                        <td><img src={gambar_food} style={{width: '120px',height:'120px'}} /></td>
+                        <td><img src={gambar_food} style={{width: '120px',height:'120px'}} alt={liFood}/></td>
                       </tr>
                     </tbody>
                   </table></li>);
-                  if(l==food_req.length-1){
+                  if(""+l===""+(food_req.length-1)){
                     const gas_cosumption_req = gas_req;
-                    fetch(
-                    "https://test.wax.api.atomicassets.io/atomicassets/v1/templates?collection_name=fajarmuhf123&schema_name=tools&limit=100"
-                    ).then((res3) => res3.json())
-                    .then((json3) => {
-                      for(var k1=0;k1<json3["data"].length;k1++){
+                    
+                    const get_hasil_template_tools = await fetch("https://test.wax.api.atomicassets.io/atomicassets/v1/templates?collection_name=fajarmuhf123&schema_name=tools&limit=100");
+                    const json3 = await get_hasil_template_tools.json();
+
+                    for(var k1=0;k1<json3["data"].length;k1++){
                         for(var l1=0;l1<tools_req.length;l1++){
-                          if(json3["data"][k1]["template_id"] == tools_req[l1]){            
+                          if(""+json3["data"][k1]["template_id"] === ""+tools_req[l1]){            
                             const energyReqK = "energyReqK"+i;
                             const chargeTimeReqK = "chargetimeReqK"+i;
                             const maxCookingReqK = "maxcookingReqK"+i;
@@ -128,11 +128,11 @@ async function getRecipes(setPacksL,setStatusContent,setJudul,timerCooking,setAl
                                 </thead>
                                 <tbody>
                                 <tr>
-                                  <td><img src={gambar_tools} style={{width: '120px',height:'120px'}} /></td>
+                                  <td><img src={gambar_tools} style={{width: '120px',height:'120px'}} alt={liTools}/></td>
                                 </tr>
                               </tbody>
                             </table></li>);
-                            if(l1==tools_req.length-1){
+                            if(""+l1===""+(tools_req.length-1)){
                               kTools.push(<td key={cTools}><p>tools require</p><ul>{tools_list}</ul></td>);
                               kFood.push(<td key={cFood}><p>food require</p><ul>{food_list}</ul></td>);
                               global.config.imgPacksL = <table align='center' style={{marginTop: '20px'}} >
@@ -164,15 +164,12 @@ async function getRecipes(setPacksL,setStatusContent,setJudul,timerCooking,setAl
                           }
                         }
                       }
-                    });
                   }
                 }
               }
             }
-           });
         }
       }
-    });
   }
 
   setStatusContent("Recipes");  
