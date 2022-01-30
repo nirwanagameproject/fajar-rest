@@ -1,7 +1,7 @@
 
 async function initilisasi(timerCooking){
   global.config.statusTimerCooking=false;
-  clearInterval(timerCooking);
+  clearInterval(global.config.timersku);
   return global.config.session;
 }
 

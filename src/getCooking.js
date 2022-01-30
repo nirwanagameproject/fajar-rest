@@ -119,7 +119,7 @@ async function getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAl
   setPacksL(global.config.imgPacksL);
   setStatusContent("Cooking");
   setJudul(<h2>Cooking</h2>);
-  const timersku = setInterval(async () => {
+  global.config.timersku = setInterval(async () => {
     if(global.config.statusTimerCooking){
       for(var i=0;i<hasil["rows"][0]["slot_cooking"];i++){
         var found = false;
@@ -150,7 +150,7 @@ async function getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAl
               const timeCount = nextAvailability-Math.round(new Date().getTime()/1000);
               
               if(timeCount <= 0){
-                tampilkan("ready",i,kTimer,cookingClaim,maxCooking,kButton,kNama,setPacksL);
+                tampilkan("ready",i,kTimer,cookingClaim,maxCooking,kButton,kNama,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking);
               }
               else{
                 var days = Math.floor(timeCount / (60 * 60 * 24));
@@ -161,7 +161,7 @@ async function getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAl
                 var seconds = Math.floor((timeCount % (60)) );
                 seconds = ("0" + seconds).slice(-2);
                 var timeString = days+" "+hours+":"+minutes+":"+seconds;
-                tampilkan(timeString,i,kTimer,cookingClaim,maxCooking,kButton,kNama,setPacksL);
+                tampilkan(timeString,i,kTimer,cookingClaim,maxCooking,kButton,kNama,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking);
               }
             }
 
@@ -170,7 +170,7 @@ async function getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAl
         if(!found){
           const keku2 = "kButton"+i;
           const id_slot = i+1;
-          kButton[i] = (<td key={keku2} onClick={() => {global.config.statusTimerCooking=false;clearInterval(timersku);getCookingSlot(id_slot,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)}}><button>Add</button></td>);
+          kButton[i] = (<td key={keku2} onClick={() => {global.config.statusTimerCooking=false;clearInterval(global.config.timersku);getCookingSlot(id_slot,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)}}><button>Add</button></td>);
 
           if(global.config.statusTimerCooking){
             global.config.imgPacksL = <table align='center' style={{marginTop: '20px'}} >
@@ -193,21 +193,22 @@ async function getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAl
         }
       }
     }
+    else{
+      clearInterval(global.config.timersku);
+    }
 
   },1000);
-
-  setTimerCooking(timersku);
  
 }
 
-function tampilkan(timeleft,i,kTimer,cookingClaim,maxCooking,kButton,kNama,setPacksL) {
+function tampilkan(timeleft,i,kTimer,cookingClaim,maxCooking,kButton,kNama,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking) {
   const timeString = timeleft;
   const keku3 = "kTimer"+i;
   kTimer[i] = (<td key={keku3}>({cookingClaim}/{maxCooking}) {timeString}</td>);
   const keku2 = "kButton"+i;
   const id_slot = i+1;
   if(timeleft+""==="ready"){
-    kButton[i] = (<td key={keku2} onClick={() => {claimCook(id_slot)}}><button>Cook</button></td>);
+    kButton[i] = (<td key={keku2} onClick={() => {claimCook(id_slot,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking)}}><button>Cook</button></td>);
   }
   else{
     kButton[i] = (<td key={keku2}> cooking.. </td>);  
