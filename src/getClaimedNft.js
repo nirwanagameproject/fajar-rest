@@ -12,6 +12,7 @@ async function getClaimedNft(trxId,setPacksL,setStatusContent,setJudul,timerCook
     );
 
     json = await res.json();
+    console.log(json);
     
     banyakAksi = json["actions"].length;
   }

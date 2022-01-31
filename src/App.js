@@ -24,6 +24,7 @@ import getNftUnclaimPack from './getNftUnclaimPack.js'
 import getPacks from './getPacks.js'
 import getNft from './getNft.js'
 import getNftTool from './getNftTool.js'
+import getNftCuisine from './getNftCuisine.js'
 
 import getDeposit from './getDeposit.js'
 import getWithdraw from './getWithdraw.js'
@@ -91,6 +92,7 @@ function App() {
                   <li><a href={global.config.hrefVal} onClick={()=>{getNftPack(setPacksL,setStatusContent,setJudul,timerCooking,setAlert)}}>My Packs</a></li>
                   <li><a href={global.config.hrefVal} onClick={()=>{getNft(setPacksL,setStatusContent,setJudul,timerCooking,setAlert)}}>My Raw Material</a></li>
                   <li><a href={global.config.hrefVal} onClick={()=>{getNftTool(setPacksL,setStatusContent,setJudul,timerCooking,setAlert)}}>My Tools</a></li>
+                  <li><a href={global.config.hrefVal} onClick={()=>{getNftCuisine(setPacksL,setStatusContent,setJudul,timerCooking,setAlert)}}>My Cuisine</a></li>
                 </ul>
               </li>
               <li><a href={global.config.hrefVal} onClick={() => {getPacks(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)}}>Buy Packs</a></li>
