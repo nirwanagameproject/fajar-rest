@@ -121,6 +121,33 @@ async function getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAl
   setJudul(<h2>Cooking</h2>);
   global.config.timersku = setInterval(async () => {
     if(global.config.statusTimerCooking){
+      var hasil = await global.config.link.client.v1.chain.get_table_rows({
+      code: "fajarmuhf123",
+      index_position: 1,
+      json: true,
+      key_type: "account",
+      limit: "100",
+      lower_bound: String(global.config.session.auth.actor),
+      reverse: false,
+      scope: "fajarmuhf123",
+      show_payer: false,
+      table: "account",
+      upper_bound: String(global.config.session.auth.actor)
+    });
+    var hasil2 = await global.config.link.client.v1.chain.get_table_rows({
+      code: "fajarmuhf123",
+      index_position: 2,
+      json: true,
+      key_type: "name",
+      limit: "100",
+      lower_bound: String(global.config.session.auth.actor),
+      reverse: false,
+      scope: "fajarmuhf123",
+      show_payer: false,
+      table: "cooking",
+      upper_bound: String(global.config.session.auth.actor)
+    });
+
       for(var i=0;i<hasil["rows"][0]["slot_cooking"];i++){
         var found = false;
         for(var j=0;j<hasil2["rows"].length;j++){
@@ -143,6 +170,23 @@ async function getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAl
             });
 
             if(global.config.statusTimerCooking){
+              const template_id = hasilku["rows"][0]["template_id"];
+
+              const request = await fetch("https://test.wax.api.atomicassets.io/atomicassets/v1/templates?collection_name=fajarmuhf123&schema_name=cuisine&limit=1000&lower_bound="+template_id+"&upper_bound="+(template_id+1));
+              const json = await request.json();
+
+              const keku = "kNama"+i;
+              const kekuNama = "cuisineNama"+i;
+              const gambarNama = "cuisineGambar"+i;
+              const namaCuisine = (json["data"][0]["name"]);
+              const gambarCuisine = 'https://ipfs.io/ipfs/'+(json["data"][0]["immutable_data"]["img"]);
+
+              const CuisineFood = <ul style={{listStyleType: 'none',padding: 0,margin: 0}}>
+                <li key={kekuNama} style={{color:'white'}}>{namaCuisine}</li>
+                <li key={gambarNama}><img src={gambarCuisine} style={{width: '120px',height:'120px'}} alt={gambarNama}/></li>
+              </ul>;
+
+              kNama[i] = (<td key={keku}><div style={{paddingTop: '3px',backgroundImage: `url(${slot})`,backgroundPosition: 'center',backgroundSize: 'cover',backgroundRepeat: 'no-repeat',width: '120px',height:'140px'}}>{CuisineFood}</div></td>);
 
               const cookingClaim = (hasil2["rows"][j]["cooking_claim"]);
               const maxCooking = (hasilku["rows"][0]["max_cooking"]);
