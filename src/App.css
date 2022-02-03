@@ -123,16 +123,15 @@ $alert-extra-padding: 50px;
   margin-bottom: 20px;
   text-align: center;
   justify-content: center;
-  width: 675px;
+  width: 775px;
   background: #0099CC;
   color: #FFF;
   height: 45px;
-  padding-left: 0px;
   border-radius: 10px;
 }
 #menu ul, #menu li {
-  margin: 0 auto;
-  padding: 0;
+  margin: auto;
+  padding: 0px;
   list-style: none
 }
 #menu ul {

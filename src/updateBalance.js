@@ -28,11 +28,11 @@ async function updateBalance(userStr,setBalanceAccount,setPropsAccount){
     if(hasil["rows"][i]["balance"][0].split(" ")[1]==="FRCOIN"){
       frcoin=hasil["rows"][i]["balance"][0].split(" ")[0];
     }
-    if(hasil["rows"][i]["balance"][0].split(" ")[1]==="FRGAS"){
-      frgas=hasil["rows"][i]["balance"][0].split(" ")[0];
+    if(hasil["rows"][i]["balance"][1].split(" ")[1]==="FRGAS"){
+      frgas=hasil["rows"][i]["balance"][1].split(" ")[0];
     }
-    if(hasil["rows"][i]["balance"][0].split(" ")[1]==="FRENERG"){
-      frenergy=hasil["rows"][i]["balance"][0].split(" ")[0];
+    if(hasil["rows"][i]["balance"][2].split(" ")[1]==="FRENERG"){
+      frenergy=hasil["rows"][i]["balance"][2].split(" ")[0];
     }    
   }
   let bal = ", FRCOIN = "+frcoin+", FRGAS = "+frgas+", FRENERG = "+frenergy;

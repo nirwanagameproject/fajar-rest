@@ -1,7 +1,8 @@
 import initilisasi from './initilisasi.js'
 import React from 'react'
+import consume from './consume.js'
 
-async function getNftCuisine(setPacksL,setStatusContent,setJudul,timerCooking,setAlert){
+async function getNftCuisine(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking){
   global.config.session = await initilisasi(timerCooking);
 
   fetch(
@@ -14,9 +15,12 @@ async function getNftCuisine(setPacksL,setStatusContent,setJudul,timerCooking,se
     let kNama=[];
     let kImg=[];
     let kRarity=[];
+    let kButton=[];
     while(i<banyak){
+      let req_asset_ids = json["data"][i]["asset_id"];
       let nameNow = "nameNft"+i;
       let imgNftNow = "imageNft"+i;
+      let buttonNow = "buttonNft"+i;
       let rarityNow = "rarityNft"+i;
       let energyNow = "energyNft"+i;
       let karboNow = "karboNft"+i;
@@ -39,11 +43,14 @@ async function getNftCuisine(setPacksL,setStatusContent,setJudul,timerCooking,se
           <li key={lemakNow}>lemak : {lemak}</li>
         </ul>
       </td>);
+      kButton.push(<td key={buttonNow}><button onClick={() => {consume(req_asset_ids,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking);}}>Consume</button></td>);
+      
       i++;
     }
 
     konten.push(<tr key="imageNft">{kImg}</tr>);
     konten.push(<tr key="rarityNft">{kRarity}</tr>);
+    konten.push(<tr key="buttonNft">{kButton}</tr>);
     global.config.imgPacksL = <table align='center' style={{marginTop: '20px'}} >
                     <thead>
                       <tr key="nameNft">

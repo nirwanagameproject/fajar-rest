@@ -29,6 +29,9 @@ import getNftCuisine from './getNftCuisine.js'
 import getDeposit from './getDeposit.js'
 import getWithdraw from './getWithdraw.js'
 
+import getRefill from './getRefill.js'
+import getRefillEnergy from './getRefillEnergy.js'
+
 import getRecipes from './getRecipes.js'
 import getCooking from './getCooking.js'
 
@@ -94,12 +97,13 @@ function App() {
                   <li><a href={global.config.hrefVal} onClick={()=>{getNftPack(setPacksL,setStatusContent,setJudul,timerCooking,setAlert)}}>My Packs</a></li>
                   <li><a href={global.config.hrefVal} onClick={()=>{getNft(setPacksL,setStatusContent,setJudul,timerCooking,setAlert)}}>My Raw Material</a></li>
                   <li><a href={global.config.hrefVal} onClick={()=>{getNftTool(setPacksL,setStatusContent,setJudul,timerCooking,setAlert)}}>My Tools</a></li>
-                  <li><a href={global.config.hrefVal} onClick={()=>{getNftCuisine(setPacksL,setStatusContent,setJudul,timerCooking,setAlert)}}>My Cuisine</a></li>
+                  <li><a href={global.config.hrefVal} onClick={()=>{getNftCuisine(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking)}}>My Cuisine</a></li>
                 </ul>
               </li>
               <li><a href={global.config.hrefVal} onClick={() => {getPacks(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)}}>Buy Packs</a></li>
               <li><a href={global.config.hrefVal} onClick={() => {getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking)}}>Cooking</a></li>
               <li><a href={global.config.hrefVal} onClick={() => {getCustomer(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking)}}>My Restaurant</a></li>
+              <li><a href={global.config.hrefVal} onClick={() => {getRefill(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)}}>Refill</a></li>
               <li><a href={global.config.hrefVal} onClick={() => {getDeposit(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)}}>Wallet</a></li>
               <li><a href={global.config.hrefVal} onClick={() => {logout(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setUserAccount,loadSession,setLoadSession)}}>Log out</a></li>
             </ul>
@@ -117,6 +121,10 @@ function App() {
       {
         (statusContent === "WalletDeposit") ? (<button onClick={() => {getWithdraw(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)}}>Withdraw</button>)
         : (statusContent === "WalletWithdraw") && (<button onClick={() => {getDeposit(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)}}>Deposit</button>)
+      }
+      {
+        (statusContent === "RefillGas") ? (<button onClick={()=>{getRefillEnergy(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)}}>Energy</button>)
+        : (statusContent === "RefillEnergy") && (<button onClick={()=>{getRefill(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)}}>Gas</button>)
       }
       <div id='balance'>Hello {userAccount} {balanceAccount}</div>
       <div id='props'>{propsAccount}</div>

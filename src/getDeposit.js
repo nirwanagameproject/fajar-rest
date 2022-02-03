@@ -64,9 +64,9 @@ async function getDeposit(setPacksL,setStatusContent,setJudul,timerCooking,setAl
 
   var gambarContent=[];
   gambarContent.push(<td key="col51">Amount</td>);
-  gambarContent.push(<td key="col52"><input type="text" name="global.config.frcoin" onChange={evt => updateInputValue("FRCOIN",evt,nameContent,gambarContent,buttonContent,fee,setPacksL)}/></td>);
-  gambarContent.push(<td key="col53"><input type="text" name="global.config.frgas"  onChange={evt => updateInputValue("FRGAS",evt,nameContent,gambarContent,buttonContent,fee,setPacksL)}/></td>);
-  gambarContent.push(<td key="col54"><input type="text" name="global.config.frenergy" onChange={evt => updateInputValue("FRENERGY",evt,nameContent,gambarContent,buttonContent,fee,setPacksL)}/></td>);
+  gambarContent.push(<td key="col52"><input type="text" name="global.config.frcoin" onChange={evt => updateInputValue("FRCOIN",evt,nameContent,gambarContent,buttonContent,fee,setPacksL,"deposit")}/></td>);
+  gambarContent.push(<td key="col53"><input type="text" name="global.config.frgas"  onChange={evt => updateInputValue("FRGAS",evt,nameContent,gambarContent,buttonContent,fee,setPacksL,"deposit")}/></td>);
+  gambarContent.push(<td key="col54"><input type="text" name="global.config.frenergy" onChange={evt => updateInputValue("FRENERGY",evt,nameContent,gambarContent,buttonContent,fee,setPacksL,"deposit")}/></td>);
 
   global.config.imgPacksL = [];
   global.config.imgPacksL.push(<p key="wit1">deposit fee : {fee} %</p>);
