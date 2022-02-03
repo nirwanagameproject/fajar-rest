@@ -96,7 +96,7 @@ function App() {
                 <ul className='sub-menus'>
                   <li><a href={global.config.hrefVal} onClick={()=>{getNftPack(setPacksL,setStatusContent,setJudul,timerCooking,setAlert)}}>My Packs</a></li>
                   <li><a href={global.config.hrefVal} onClick={()=>{getNft(setPacksL,setStatusContent,setJudul,timerCooking,setAlert)}}>My Raw Material</a></li>
-                  <li><a href={global.config.hrefVal} onClick={()=>{getNftTool(setPacksL,setStatusContent,setJudul,timerCooking,setAlert)}}>My Tools</a></li>
+                  <li><a href={global.config.hrefVal} onClick={()=>{getNftTool(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking)}}>My Tools</a></li>
                   <li><a href={global.config.hrefVal} onClick={()=>{getNftCuisine(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking)}}>My Cuisine</a></li>
                 </ul>
               </li>

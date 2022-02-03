@@ -21,12 +21,12 @@ async function consume(asset_id,setPacksL,setStatusContent,setJudul,timerCooking
 	await global.config.session.transact({action})
 	.then(function(response){
 	  if(response.processed.receipt.status==="executed"){
-	    onShowAlert("success","Comsume successfully.Transaction at "+response.processed.id,"Comsume Success",() => {getNftCuisine(setPacksL,setStatusContent,setJudul,timerCooking,setAlert);updateBalance(String(global.config.session.auth.actor),setBalanceAccount,setPropsAccount);onCloseAlert(setAlert)},setAlert);
+	    onShowAlert("success","Consume successfully.Transaction at "+response.processed.id,"Consume Success",() => {getNftCuisine(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking);updateBalance(String(global.config.session.auth.actor),setBalanceAccount,setPropsAccount);onCloseAlert(setAlert)},setAlert);
 	  }
 	})
 	.catch(function (e) {
 	  console.log(e);
-	  onShowAlert("error","Comsume failed."+e,"Fail Comsume",() => {onCloseAlert(setAlert)},setAlert);
+	  onShowAlert("error","Consume failed."+e,"Fail Consume",() => {onCloseAlert(setAlert)},setAlert);
 	})
 }
 export default consume;

@@ -212,6 +212,11 @@ async function getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAl
           }
         }
         if(!found){
+          const keku = "kNama"+i;
+          const CuisineFood = "";
+
+          kNama[i] = (<td key={keku}><div style={{paddingTop: '3px',backgroundImage: `url(${slot})`,backgroundPosition: 'center',backgroundSize: 'cover',backgroundRepeat: 'no-repeat',width: '120px',height:'140px'}}>{CuisineFood}</div></td>);
+
           const keku2 = "kButton"+i;
           const id_slot = i+1;
           kButton[i] = (<td key={keku2} onClick={() => {global.config.statusTimerCooking=false;clearInterval(global.config.timersku);getCookingSlot(id_slot,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)}}><button>Add</button></td>);
