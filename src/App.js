@@ -32,6 +32,8 @@ import getWithdraw from './getWithdraw.js'
 import getRecipes from './getRecipes.js'
 import getCooking from './getCooking.js'
 
+import getCustomer from './getCustomer.js'
+
 function App() {
   const [timerCooking,setTimerCooking] = useState(false);
   const [judul,setJudul] = useState('');
@@ -97,6 +99,7 @@ function App() {
               </li>
               <li><a href={global.config.hrefVal} onClick={() => {getPacks(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)}}>Buy Packs</a></li>
               <li><a href={global.config.hrefVal} onClick={() => {getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking)}}>Cooking</a></li>
+              <li><a href={global.config.hrefVal} onClick={() => {getCustomer(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking)}}>My Restaurant</a></li>
               <li><a href={global.config.hrefVal} onClick={() => {getDeposit(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)}}>Wallet</a></li>
               <li><a href={global.config.hrefVal} onClick={() => {logout(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setUserAccount,loadSession,setLoadSession)}}>Log out</a></li>
             </ul>

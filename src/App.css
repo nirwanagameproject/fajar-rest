@@ -123,11 +123,11 @@ $alert-extra-padding: 50px;
   margin-bottom: 20px;
   text-align: center;
   justify-content: center;
-  width: 600px;
+  width: 675px;
   background: #0099CC;
   color: #FFF;
   height: 45px;
-  padding-left: 18px;
+  padding-left: 0px;
   border-radius: 10px;
 }
 #menu ul, #menu li {
