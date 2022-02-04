@@ -48,12 +48,12 @@ async function getNftTool(setPacksL,setStatusContent,setJudul,timerCooking,setAl
       let max_durability = json["data"][i]["data"]["durability"];
       let imgku = 'https://ipfs.io/ipfs/'+json["data"][i]["data"]["img"];
       let rarity = json["data"][i]["data"]["rarity"];
-      let rarityku = <ul>
+      let rarityku = <ul style={{paddingLeft:'0px',listStyleType:'none'}}>
                       <li key={durableNow}>durability : {tools_durability} / {max_durability}</li>
                       <li key={rarNow}>rarity : {rarity}</li>
                     </ul>;
       kNama.push(<td key={nameNow}>{namaku}</td>);
-      kImg.push(<td key={imgNftNow}><img src={imgku} style={{width: '120px',height:'120px'}} alt={imgNftNow}></img></td>);
+      kImg.push(<td key={imgNftNow} style={{textAlign:'center'}}><img src={imgku} style={{width: '120px',height:'120px'}} alt={imgNftNow}></img></td>);
       kRarity.push(<td key={rarityNow}>{rarityku}</td>);
       if(tools_durability < max_durability){
         kButton.push(<td key={buttonNow}><button onClick={() => {repair(req_asset_ids,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking);}}>Repair</button></td>);
