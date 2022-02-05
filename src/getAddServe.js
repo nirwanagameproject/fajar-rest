@@ -53,7 +53,8 @@ async function getAddServe(id_slot,setPacksL,setStatusContent,setJudul,timerCook
     konten.push(<tr key="imageNft">{kImg}</tr>);
     konten.push(<tr key="buttonNft">{kButton}</tr>);
     if(banyak > 0){
-      global.config.imgPacksL.push(<table align='center' style={{marginTop: '20px'}} >
+      let tableNow = "tables"+global.config.pageNumber;
+      global.config.imgPacksL.push(<table key={tableNow} align='center' style={{marginTop: '20px'}} >
                     <thead>
                       <tr key="nameNft">
                         {kNama}
