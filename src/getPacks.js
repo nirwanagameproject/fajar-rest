@@ -1,12 +1,24 @@
 import initilisasi from './initilisasi.js'
 import buyPacks from './buyPacks.js'
-import React from 'react'
+import React,{ memo } from 'react'
+
+const ChildNama = memo(({ nama, keyName }) => {
+  return <td key={keyName}>{nama}</td>;
+});
+
+const ChildImg = memo(({ nama, keyName }) => {
+  return <td key={keyName} style={{textAlign:'center'}}><img src={nama} style={{width: '120px',height:'120px'}} alt={keyName}></img></td>;
+});
+
+const ChildButton = memo(({ nama, keyName }) => {
+  return <td key={keyName}>{nama}</td>;
+});
 
 async function getPacks(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount){
   global.config.session = await initilisasi(timerCooking);
 
   fetch(
-    "https://test.wax.api.atomicassets.io/atomicassets/v1/templates?collection_name=fajarmuhf123&schema_name=packs&limit=1000")
+    "https://test.wax.api.atomicassets.io/atomicassets/v1/templates?collection_name=fajarmuhf123&schema_name=packs&limit=10")
   .then((res) => res.json())
   .then(async (json) => {
 
@@ -49,11 +61,12 @@ async function getPacks(setPacksL,setStatusContent,setJudul,timerCooking,setAler
             
             const pricePacks = hasil["rows"][j]["price"];
             const fungsi = () => {buyPacks(idPacks,(global.config.session.auth.actor),pricePacks,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)};
-            nameContent.push(<td key={nameNow}>{namePacks}</td>);
+            nameContent.push(<ChildNama key={nameNow} keyName={nameNow} nama={namePacks} />);
             descContent.push(<td key={imgNftNow}>{descPacks}</td>);
             priceContent.push(<td key={priceNow}>{pricePacks}</td>);
-            gambarContent.push(<td key={gambarNow}><img src={gambarPacks} style={{width: '120px',height:'120px'}} alt={gambarNow}></img></td>);
-            buttonContent.push(<td key={buttonNow}><button onClick={fungsi}>Buy Now</button></td>);
+            gambarContent.push(<ChildImg key={gambarNow} keyName={gambarNow} nama={gambarPacks} />);
+            const buttonPush= <button onClick={fungsi}>Buy Now</button>;
+            buttonContent.push(<ChildButton key={buttonNow} keyName={buttonNow} nama={buttonPush} />);
           }
         }
       }

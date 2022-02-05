@@ -94,8 +94,8 @@ function App() {
               <li><a href={global.config.hrefVal} onClick={() => {getPacks(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount)}}>Home</a></li>
               <li><a href={global.config.hrefVal} className='dropdown-arrow'>My NFT</a>
                 <ul className='sub-menus'>
-                  <li><a href={global.config.hrefVal} onClick={()=>{getNftPack(setPacksL,setStatusContent,setJudul,timerCooking,setAlert)}}>My Packs</a></li>
-                  <li><a href={global.config.hrefVal} onClick={()=>{getNft(setPacksL,setStatusContent,setJudul,timerCooking,setAlert)}}>My Raw Material</a></li>
+                  <li><a href={global.config.hrefVal} onClick={()=>{getNftPack(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking)}}>My Packs</a></li>
+                  <li><a href={global.config.hrefVal} onClick={()=>{getNft(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking)}}>My Raw Material</a></li>
                   <li><a href={global.config.hrefVal} onClick={()=>{getNftTool(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking)}}>My Tools</a></li>
                   <li><a href={global.config.hrefVal} onClick={()=>{getNftCuisine(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking)}}>My Cuisine</a></li>
                 </ul>
@@ -111,7 +111,7 @@ function App() {
       }
       {judul}
       {
-        (statusContent === "Cooking") ? (<button onClick={() => {getRecipes(setPacksL,setStatusContent,setJudul,timerCooking,setAlert)}}>Recipes</button>)
+        (statusContent === "Cooking") ? (<button onClick={() => {getRecipes(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking)}}>Recipes</button>)
         : (statusContent === "Recipes") && (<button onClick={() => {getCooking(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking)}}>Cooking</button>)
       }
       {

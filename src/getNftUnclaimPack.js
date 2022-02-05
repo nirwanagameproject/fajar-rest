@@ -10,7 +10,7 @@ async function getNftUnclaimPack(setPacksL,setStatusContent,setJudul,timerCookin
       index_position: 2,
       json: true,
       key_type: "name",
-      limit: 10,
+      limit: global.config.tableLimit,
       lower_bound: (global.config.session.auth.actor),
       reverse: false,
       scope: "atomicpacksx",

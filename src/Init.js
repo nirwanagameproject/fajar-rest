@@ -11,6 +11,8 @@ module.exports = global.config = {
     link: "Link to Achor Wallet",
     identifier: "fajar-rest",
     hrefVal : "#",
-    timersku : false
+    timersku : false,
+    pageNumber : 1,
+    tableLimit : 5
     // other global config variables you wish
 };
