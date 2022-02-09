@@ -206,11 +206,12 @@ async function getCustomer(setPacksL,setStatusContent,setJudul,timerCooking,setA
 
               const status = (hasil2["rows"][j]["status"]);
               const nextAvailability = (hasil2["rows"][j]["next_availability"]);
+              const nextAvailabilityServe = (hasil2["rows"][j]["expire_time"]);
               const nextAvailabilityInvite = (hasil3["rows"][0]["next_availability"]);
               const profit = (hasil2["rows"][j]["reward"]);
               const timeCount = nextAvailability-Math.round(new Date().getTime()/1000);
               const timeCountReqInvite = nextAvailabilityInvite-Math.round(new Date().getTime()/1000);
-
+              const timeExpire = nextAvailabilityServe-Math.round(new Date().getTime()/1000);
 
               const keku4 = "kReqButton"+i;
               colReqButton = hasil["rows"][0]["slot_customer"];
@@ -218,19 +219,55 @@ async function getCustomer(setPacksL,setStatusContent,setJudul,timerCooking,setA
   
               if(timeCount <= 0){
                 if(timeCountReqInvite <= 0){
-                  tampilkan("ready",i,kTimer,status,kButton,kNama,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking,kReqButton,"ready",colReqButton,profit);
+                  if(status+""==="waiting"){
+                    if(timeExpire > 0){
+                      var days = Math.floor(timeExpire / (60 * 60 * 24));
+                      var hours = Math.floor((timeExpire % (60 * 60 * 24)) / (60 * 60));
+                      hours = ("0" + hours).slice(-2);
+                      var minutes = Math.floor((timeExpire % (60 * 60)) / (60));
+                      minutes = ("0" + minutes).slice(-2);
+                      var seconds = Math.floor((timeExpire % (60)) );
+                      seconds = ("0" + seconds).slice(-2);
+                      var timeString = days+" "+hours+":"+minutes+":"+seconds;
+                      tampilkan(timeString,i,kTimer,status,kButton,kNama,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking,kReqButton,"ready",colReqButton,profit);
+                    }
+                    else{
+                      tampilkan("expire",i,kTimer,status,kButton,kNama,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking,kReqButton,"ready",colReqButton,profit);  
+                    }
+                  }
+                  else{
+                    tampilkan("ready",i,kTimer,status,kButton,kNama,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking,kReqButton,"ready",colReqButton,profit);
+                  }
                 }
                 else{
-                  var days = Math.floor(timeCountReqInvite / (60 * 60 * 24));
-                  var hours = Math.floor((timeCountReqInvite % (60 * 60 * 24)) / (60 * 60));
+                  days = Math.floor(timeCountReqInvite / (60 * 60 * 24));
+                  hours = Math.floor((timeCountReqInvite % (60 * 60 * 24)) / (60 * 60));
                   hours = ("0" + hours).slice(-2);
-                  var minutes = Math.floor((timeCountReqInvite % (60 * 60)) / (60));
+                  minutes = Math.floor((timeCountReqInvite % (60 * 60)) / (60));
                   minutes = ("0" + minutes).slice(-2);
-                  var seconds = Math.floor((timeCountReqInvite % (60)) );
+                  seconds = Math.floor((timeCountReqInvite % (60)) );
                   seconds = ("0" + seconds).slice(-2);
                   var timeString2 = days+" "+hours+":"+minutes+":"+seconds;
 
-                  tampilkan("ready",i,kTimer,status,kButton,kNama,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking,kReqButton,timeString2,colReqButton,profit);  
+                  if(status+""==="waiting"){
+                    if(timeExpire > 0){
+                      days = Math.floor(timeExpire / (60 * 60 * 24));
+                      hours = Math.floor((timeExpire % (60 * 60 * 24)) / (60 * 60));
+                      hours = ("0" + hours).slice(-2);
+                      minutes = Math.floor((timeExpire % (60 * 60)) / (60));
+                      minutes = ("0" + minutes).slice(-2);
+                      seconds = Math.floor((timeExpire % (60)) );
+                      seconds = ("0" + seconds).slice(-2);
+                      timeString = days+" "+hours+":"+minutes+":"+seconds;
+                      tampilkan(timeString,i,kTimer,status,kButton,kNama,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking,kReqButton,timeString2,colReqButton,profit);  
+                    }
+                    else{
+                      tampilkan("expire",i,kTimer,status,kButton,kNama,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking,kReqButton,timeString2,colReqButton,profit);    
+                    }
+                  }
+                  else{
+                    tampilkan("ready",i,kTimer,status,kButton,kNama,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking,kReqButton,timeString2,colReqButton,profit);  
+                  }
                 }
               }
               else{
@@ -242,7 +279,7 @@ async function getCustomer(setPacksL,setStatusContent,setJudul,timerCooking,setA
                   minutes = ("0" + minutes).slice(-2);
                   seconds = Math.floor((timeCount % (60)) );
                   seconds = ("0" + seconds).slice(-2);
-                  var timeString = days+" "+hours+":"+minutes+":"+seconds;
+                  timeString = days+" "+hours+":"+minutes+":"+seconds;
                   tampilkan(timeString,i,kTimer,status,kButton,kNama,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking,kReqButton,"ready",colReqButton,profit);
                 }
                 else{
@@ -318,7 +355,12 @@ function tampilkan(timeleft,i,kTimer,status,kButton,kNama,setPacksL,setStatusCon
   const keku2 = "kButton"+i;
   const id_slot = i+1;
   if(status+""==="waiting"){
-    kButton[i] = (<td key={keku2} onClick={() => {getAddServe(id_slot,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking)}}><button>Serve</button></td>);
+    if(!(timeleft+""==="expire")){
+      kButton[i] = (<td key={keku2} onClick={() => {getAddServe(id_slot,setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setTimerCooking)}}><button>Serve</button></td>);
+    }
+    else{
+      kButton[i] = (<td key={keku2}></td>);
+    }
   }
   else {
     if(timeleft+""==="ready" && status+"" === "served"){

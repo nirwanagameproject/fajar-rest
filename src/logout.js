@@ -3,7 +3,6 @@ import initilisasi from './initilisasi.js'
 async function logout(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,setBalanceAccount,setPropsAccount,setUserAccount,loadSession,setLoadSession){
   global.config.session = await initilisasi(timerCooking);
   try{
-    global.config.session.remove();
     setUserAccount('No wallet linked');
     setLoadSession(false);
     setBalanceAccount("");
@@ -11,6 +10,7 @@ async function logout(setPacksL,setStatusContent,setJudul,timerCooking,setAlert,
     setStatusContent('');
     setJudul('');
     setPropsAccount('');
+    global.config.session.remove();
   }catch(err){
 
     console.log(err);
